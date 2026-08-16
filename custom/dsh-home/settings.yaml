@@ -1,3 +1,6 @@
 # dsh 用户设置（Web UI 设置页也会写到这里）
-# 例：agent-presets:
-#       default: standard
+agent-presets:
+  default: router-standard
+
+ui-onboarding:
+  welcomeNoticeVersion: 2026-08-13.1

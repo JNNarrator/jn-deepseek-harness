@@ -1,12 +1,15 @@
 {
   "name": "dsh-profile-web",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "@dsh-external/dsh-super-injector": "link:../../../vendor/dsh-super-injector"
+  },
   "dsh": {
     "profile": {
       "bundles": [
         "@deepseek-ai/dsh-base",
-        "@deepseek-ai/dsh-web-app"
+        "@deepseek-ai/dsh-web-app",
+        "@dsh-external/dsh-super-injector"
       ]
     }
   }

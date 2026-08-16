@@ -30,7 +30,8 @@ fi
 if git diff --cached --quiet; then
   msg "没有新的变更需要记录。"
 else
-  git commit -m "chore(custom): 记录 dsh 定制状态 $(date '+%Y-%m-%d %H:%M')"
+  # --no-verify：custom/ 是定制记录，不走上游开发用钩子（lint/whitespace 等）
+  git commit --no-verify -m "chore(custom): 记录 dsh 定制状态 $(date '+%Y-%m-%d %H:%M')"
   ok "已提交"
 fi
 
