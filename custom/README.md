@@ -106,5 +106,6 @@ custom/bin/update.sh --push    # 合并后推送回你的 fork
 
 - **`pnpm dsh` 报 node 版本**：需要 ≥ 22.19。
 - **Windows 上 shell 工具不可用**：dsh 在 Windows 依赖 PowerShell 7（pwsh）作为 shell provider，`winget install Microsoft.PowerShell` 安装。
+- **dsh-playwright-browser 浏览器**：插件回退链为 Playwright 自带 chromium → 系统 Chrome → 系统 Edge，机器上有 Chrome/Edge 即可直接用；想用 Playwright 独立管理的 chromium 可运行 `pnpm --dir custom/dsh-home/profiles/web exec playwright install chromium`（约 150MB，机器本地缓存，不入库）。装了此插件后 web 启动会慢一些（加载 playwright 模块），属正常。
 - **`git clone` 在部分网络环境失败**：如果你用代理工具（Clash 之类）且它开了 fake-ip 模式，`github.com` 可能被解析到不可路由的 IP（如 198.18.x.x）。解决办法：把 `github.com` 的真实 IP 写进系统 hosts，或在该工具里给 github.com 配置直连/代理规则。
 - **Windows 符号链接**：仓库里一些文件（如 `CLAUDE.md`、`scripts/*.sh`）在 Windows 上以链接目标文本形式存在（`core.symlinks=false`），这是 Git for Windows 的正常行为，不影响使用。
