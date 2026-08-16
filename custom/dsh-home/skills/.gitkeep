@@ -1,0 +1,2 @@
+# 你的自定义 skill 放这里：custom/dsh-home/skills/<名字>/SKILL.md
+# （名字需 kebab-case，如 my-skill；可加 frontmatter 控制调用策略）

@@ -1,0 +1,11 @@
+# 对所有 profile 生效的用户 patch 层
+# 优先级：bundle 层 < profile 的 cordis.patch.yml < 本文件 < --patch 参数
+# MCP server 配置示例：
+# - id: mcp-github
+#   name: '@deepseek-ai/dsh-mcp-client'
+#   config:
+#     serverName: github
+#     transport: stdio
+#     command: npx
+#     args: ['-y', '@modelcontextprotocol/server-github']
+[]

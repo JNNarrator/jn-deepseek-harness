@@ -1,0 +1,16 @@
+# ---- 运行时/可重建数据（不入库）----
+sessions/
+storages/
+attachments/
+profiles/node_modules/
+profiles/*/node_modules/
+profiles/*/cordis.yml
+profiles/*/pnpm-lock.yaml
+
+# ---- 密钥与机器标识（绝不能提交）----
+.credentials.yaml
+.env
+.anonymous-user-id
+
+# ---- 日志等 ----
+*.log

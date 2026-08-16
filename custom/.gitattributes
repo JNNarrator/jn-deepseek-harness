@@ -1,0 +1,4 @@
+# 只作用于 custom/ 子树，不影响上游文件
+* text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
