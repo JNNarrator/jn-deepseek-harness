@@ -76,7 +76,7 @@ llm-pi-ai:
         - id: kimi-k3
           name: kimi-k3
 agent-default-model:
-  provider: one-model
+  provider: vision-toolkit-one-model
   model: deepseek-v4-flash
 permission:
   defaultPreset: danger-full-access
@@ -92,7 +92,7 @@ vision-toolkit:
     userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
       like Gecko) Chrome/126.0.0.0 Safari/537.36
   language: zh
-  timeoutMs: 15000
+  timeoutMs: 60000
   maxImageBytes: 4194304
   maxImagePixels: 20000000
   concurrency: 4
