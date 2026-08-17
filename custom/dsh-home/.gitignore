@@ -2,6 +2,7 @@
 sessions/
 storages/
 attachments/
+cache/
 profiles/node_modules/
 profiles/*/node_modules/
 profiles/*/cordis.yml
