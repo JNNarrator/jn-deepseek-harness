@@ -15,8 +15,15 @@ export DSH_HOME="$(kit_dsh_home)"
 msg "DSH_HOME = $DSH_HOME"
 cd "$KIT_REPO_ROOT"
 
+# 平台专属 overlay：macOS 上给 vision-toolkit 提供 Homebrew python 路径
+platform_patch=()
+if [ "$KIT_OS" = "macos" ] && [ -f "$KIT_DSH_HOME_DIR/profiles/web/cordis.patch.macos.yml" ]; then
+  msg "应用 macOS 专属 patch（vision-toolkit python 路径）"
+  platform_patch=(--patch "$KIT_DSH_HOME_DIR/profiles/web/cordis.patch.macos.yml")
+fi
+
 if [ "$#" -eq 0 ]; then
   msg "启动 Web UI：http://127.0.0.1:3080 （Ctrl+C 退出）"
-  exec pnpm dsh web
+  exec pnpm dsh web "${platform_patch[@]}"
 fi
-exec pnpm dsh "$@"
+exec pnpm dsh "$@" "${platform_patch[@]}"

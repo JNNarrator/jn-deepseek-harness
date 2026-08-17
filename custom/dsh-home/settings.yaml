@@ -74,7 +74,7 @@ llm-pi-ai:
         - id: deepseek-v4-pro
           name: deepseek-v4-pro
         - id: kimi-k3
-          name: kimi-k3
+          name: kimi-k3-test
 agent-default-model:
   provider: vision-toolkit-one-model
   model: deepseek-v4-flash
@@ -98,5 +98,4 @@ vision-toolkit:
   concurrency: 4
   runtime:
     mode: managed
-    python: /opt/homebrew/bin/python3.12
   allowedDirs: []

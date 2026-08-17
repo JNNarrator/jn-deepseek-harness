@@ -1,0 +1,8 @@
+# macOS 专属 overlay：由 custom/bin/dsh.sh 检测到 Darwin 时以 --patch 传入。
+# vision-toolkit 的 python 必须用 Homebrew 的 python3.12（系统自带 python3
+# 为 3.9，不满足插件 ≥3.11 的要求）；其他平台不传此文件，插件自动探测
+# PATH 里的 python（Windows 为 Python 3.14）。
+- id: vision-toolkit
+  config:
+    runtime:
+      python: /opt/homebrew/bin/python3.12
