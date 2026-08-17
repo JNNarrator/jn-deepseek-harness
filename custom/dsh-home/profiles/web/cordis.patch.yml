@@ -1,7 +1,7 @@
 # Your patch layer for this dsh profile, applied after every bundle layer:
 # a top-level YAML array of loader patch entries (id-targeted config
 # overrides, disables, and insert lists; `!!js` expressions allowed).
-- id: vision-toolkit
-  config:
-    runtime:
-      python: /opt/homebrew/bin/python3.12
+# 注：vision-toolkit 的 runtime.python 曾在 macOS 上配置为
+# /opt/homebrew/bin/python3.12，该路径是机器相关的，在 Windows 上不可用，
+# 故此处置空（插件回落到默认 Python 解析）。多机器时请改为机器无关的写法。
+[]
