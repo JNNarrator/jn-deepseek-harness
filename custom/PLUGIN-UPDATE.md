@@ -121,7 +121,7 @@ bash custom/bin/save.sh
 
 - 仓库：https://github.com/omdsh-dev/DSH-better-sidebar
 - 说明：服务化侧边栏框架 + 完整工作台。内置：文件资源管理器（懒加载树 + CodeMirror 编辑器 + Markdown/PDF/Office 预览）、内嵌浏览器（多 tab 沙箱）、真实终端（xterm.js + node-pty）、Git 面板（真 diff + VSCode 式 diff tab）、后台任务（subagent 拓扑）、双工作台（右侧栏 + 底部面板拖拽拆分）。核心 ~325KB，懒加载。`ctx.betterSidebar` API 开放给第三方插件。
-- 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-better-sidebar@latest`，版本 0.13.1（安装于 2026-08-19，2026-08-20 升级）。
+- 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-better-sidebar@latest`，版本 0.14.0（2026-08-20 升级：0.13.1 → 0.14.0，peer deps 全部升至 rc.8，修复 editor chunk 加载失败）。
 - 兼容性：✅ dsh 0.1.0-rc.8 已适配，dump-config 装配通过。
 - 安装坑：`node-pty` 需要批准构建（`pnpm approve-builds node-pty`），否则 pnpm 安全策略拦截导致安装失败。
 
