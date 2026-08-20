@@ -110,8 +110,25 @@ bash custom/bin/save.sh
 
 - 仓库：https://github.com/GptsApp/dsh-stylevault
 - 说明：30 套开源配色（Catppuccin/Nord/Tokyo Night/Gruvbox/Dracula 等）+ 完整 Style Settings 面板。颜色/字体/字号/圆角均可 live 调，配置可导出/导入/分享。纯 CSS token 覆盖，不碰布局，不和官方 Appearance 冲突。
-- 已安装到本地 dsh：`pnpm dsh plugin --profile web add github:GptsApp/dsh-stylevault`，版本 0.3.0（安装于 2026-08-20）。
-- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过，零报错。
+- 版本 0.3.0，2026-08-20 安装，**同日卸载**（用更轻的 dsh-font + dsh-liquid-glass 替代）。
+- 卸载命令：从 `custom/dsh-home/profiles/web/package.json` 移除依赖和 bundle 声明后 `pnpm install`。
+
+### dsh-font（DSH 字体切换器）
+
+- 仓库：https://github.com/tianyhjg-lab/dsh-font
+- 说明：99 个界面字体 + 31 个代码字体，中文（黑体/宋体/楷仿/手写）+ 西文（衬线/无衬线/展示）全分组覆盖，中西文自动搭配，即选即生效，localStorage 持久化。改 `--dsw-font-family` 和 `--ds-font-family-code` 两个 token 全局生效，不打包字体文件不联网。
+- 已安装到本地 dsh：`dsh plugin --profile web add github:tianyhjg-lab/dsh-font`，版本 1.1.0（安装于 2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
+- 使用：设置 → 常规 → 字体，选择界面字体/代码字体。
+
+### dsh-liquid-glass（液态玻璃主题）
+
+- 仓库：https://github.com/Ultronen/dsh-liquid-glass
+- 说明：全界面透明化——页面底层、卡片、面板、聊天气泡、代码块经 ThemeRuntime token 覆盖层变半透玻璃。一个透明度主滑块（3%–95%），可设自定义背景图。亮色用中性白、暗色用近黑。纯 CSS token 覆盖，无 WebGPU。
+- 已安装到本地 dsh：`dsh plugin --profile web add dsh-liquid-glass`，版本 0.1.0（安装于 2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
+- 使用：设置 → 通用 → 液态玻璃。偏好存 localStorage，卸载后无害残留。
+- 注意：和 dsh-font 同属样式层，叠加使用无冲突。
 - 注意事项：
   - 安装后**需重启 DSH 进程**才加载（`dsh.client` 启动时扫描）。
   - 激活时自动为 `llm-pi-ai` 下模型写入 `reasoningEfforts` 声明并钉 `reasoning: high`（写 settings.yaml）；**卸载插件不会回滚**这些写入，需手动编辑 settings.yaml 移除。
