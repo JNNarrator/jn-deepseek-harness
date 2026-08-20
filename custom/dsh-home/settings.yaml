@@ -364,3 +364,5 @@ vision-toolkit:
   runtime:
     mode: managed
   allowedDirs: []
+locale:
+  preference: zh

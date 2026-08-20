@@ -105,6 +105,13 @@ bash custom/bin/save.sh
 - 已安装到本地 dsh：`pnpm dsh plugin --profile web add github:a1141171521/dsh-thinking-effort`，版本 0.5.2（安装于 2026-08-19）。
 - 兼容性：dsh 0.1.0-rc.8 静态验证通过（ESM import OK、dump-config 装配 OK、与 dsh-smooth-stream 无冲突）。
 - 本地修复：`client.js` 第 109 行 `commands.execute(sessionId, line)` → `commands.execute(sessionId, line, [])`（rc.8 新增第 3 个参数 `images`，插件未传导致报错）。下次 `pnpm install` 会覆盖，需重新打补丁。
+
+### dsh-stylevault（StyleVault 经典主题合集）
+
+- 仓库：https://github.com/GptsApp/dsh-stylevault
+- 说明：30 套开源配色（Catppuccin/Nord/Tokyo Night/Gruvbox/Dracula 等）+ 完整 Style Settings 面板。颜色/字体/字号/圆角均可 live 调，配置可导出/导入/分享。纯 CSS token 覆盖，不碰布局，不和官方 Appearance 冲突。
+- 已安装到本地 dsh：`pnpm dsh plugin --profile web add github:GptsApp/dsh-stylevault`，版本 0.3.0（安装于 2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过，零报错。
 - 注意事项：
   - 安装后**需重启 DSH 进程**才加载（`dsh.client` 启动时扫描）。
   - 激活时自动为 `llm-pi-ai` 下模型写入 `reasoningEfforts` 声明并钉 `reasoning: high`（写 settings.yaml）；**卸载插件不会回滚**这些写入，需手动编辑 settings.yaml 移除。
