@@ -340,8 +340,8 @@ llm-pi-ai:
           compat: {}
       reasoning: high
 agent-default-model:
-  provider: jiyuan
-  model: deepseek-v4-flash
+  provider: vision-toolkit-jiyuan
+  model: deepseek-v4-flash-0731
   reasoningEffort: high
 permission:
   defaultPreset: danger-full-access

@@ -9,8 +9,7 @@
     "dsh-better-sidebar": "^0.13.1",
     "dsh-playwright-browser": "^0.1.3",
     "dsh-smooth-stream": "^0.3.3",
-    "dsh-thinking-effort": "github:a1141171521/dsh-thinking-effort",
-    "open-sea-skin": "github:d-dev0101/open-sea-skin#v1.2.1"
+    "dsh-thinking-effort": "github:a1141171521/dsh-thinking-effort"
   },
   "dsh": {
     "profile": {
@@ -24,8 +23,7 @@
         "@anionex/dsh-vision-toolkit",
         "@zebbkira/dsh-skills-mcp-manager",
         "dsh-smooth-stream",
-        "dsh-thinking-effort",
-        "open-sea-skin"
+        "dsh-thinking-effort"
       ]
     }
   }
