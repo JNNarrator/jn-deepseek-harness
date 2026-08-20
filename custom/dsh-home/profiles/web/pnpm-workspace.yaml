@@ -5,5 +5,7 @@ nodeLinker: hoisted
 autoInstallPeers: false
 minimumReleaseAgeExclude:
   - '@anionex/dsh-vision-toolkit@0.1.32'
+  - '@anionex/dsh-vision-toolkit@0.1.35'
+  - dsh-smooth-stream@0.3.3
 allowBuilds:
   node-pty: true
