@@ -9,7 +9,8 @@
     "dsh-better-sidebar": "^0.13.1",
     "dsh-playwright-browser": "^0.1.3",
     "dsh-smooth-stream": "^0.3.3",
-    "dsh-thinking-effort": "github:a1141171521/dsh-thinking-effort"
+    "dsh-thinking-effort": "github:a1141171521/dsh-thinking-effort",
+    "dsh-client-ui-aqua": "latest"
   },
   "dsh": {
     "profile": {
@@ -23,7 +24,8 @@
         "@anionex/dsh-vision-toolkit",
         "@zebbkira/dsh-skills-mcp-manager",
         "dsh-smooth-stream",
-        "dsh-thinking-effort"
+        "dsh-thinking-effort",
+        "dsh-client-ui-aqua"
       ]
     }
   }

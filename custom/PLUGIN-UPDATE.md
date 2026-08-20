@@ -96,6 +96,14 @@ bash custom/bin/save.sh
 | 2026-08-19 | j-space | 更新 skill：v3.6.0 → v3.6.1（SKILL.md 266 行） |
 | 2026-08-18 | 全部 | 上游 harness rc.5 → rc.7；建立本准则文档 |
 
+### dsh-client-ui-aqua（Aqua 透明玻璃主题）
+
+- 仓库：https://github.com/WYH66666666/DSH-Transparent-UI-Plugin
+- 说明：纯 CSS 玻璃质感主题，覆盖顶栏、侧边栏、输入框、统计行、轨迹视图为磨砂玻璃。可在 Web UI「Appearance」设置卡片里调节玻璃模糊度、磨砂度、背景（流体/自定义壁纸），也能单独调壁纸模糊和磨砂。总开关关闭即恢复原生界面，不改 DSH 源码。
+- 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-client-ui-aqua`，版本 1.3.1（安装于 2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 静态验证通过（dump-config 装配 OK），纯 CSS 无 WebGPU/Canvas 持续渲染，性能显著优于 open-sea-skin。
+- 注意事项：和 open-sea-skin 这种 WebGPU 皮肤不叠加使用，避免样式冲突。
+
 ## 六、项目与工具记录
 
 ### dsh-thinking-effort（DSH 推理档位 + 引用目录插件）
