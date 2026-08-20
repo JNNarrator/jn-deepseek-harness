@@ -9,9 +9,10 @@
     "dsh-better-sidebar": "^0.14.0",
     "dsh-playwright-browser": "^0.1.3",
     "dsh-smooth-stream": "^0.3.3",
-    "dsh-thinking-effort": "github:a1141171521/dsh-thinking-effort",
     "dsh-font": "github:tianyhjg-lab/dsh-font",
-    "dsh-liquid-glass": "github:Ultronen/dsh-liquid-glass"
+    "dsh-liquid-glass": "github:Ultronen/dsh-liquid-glass",
+    "@hytime/dsh-thinking-effort": "latest",
+    "@dsh-external/dsh-refdir": "link:../../../vendor/dsh-refdir"
   },
   "dsh": {
     "profile": {
@@ -25,9 +26,10 @@
         "@anionex/dsh-vision-toolkit",
         "@zebbkira/dsh-skills-mcp-manager",
         "dsh-smooth-stream",
-        "dsh-thinking-effort",
         "dsh-font",
-        "dsh-liquid-glass"
+        "dsh-liquid-glass",
+        "@hytime/dsh-thinking-effort",
+        "@dsh-external/dsh-refdir"
       ]
     }
   }

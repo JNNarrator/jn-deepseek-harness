@@ -94,17 +94,35 @@ bash custom/bin/save.sh
 | 2026-08-19 | dsh-mode-boost | 新增 vendor 0.1.0 + 注册到 profile |
 | 2026-08-19 | router-standard | 更新预设：0.1.x → 0.2.0（拆分为 router-spec + router-standard 双预设，新增 bootstrap v5-v8） |
 | 2026-08-19 | j-space | 更新 skill：v3.6.0 → v3.6.1（SKILL.md 266 行） |
+| 2026-08-20 | dsh-thinking-effort | 卸载 0.5.2（a1141171521），拆分为 @hytime/dsh-thinking-effort 0.1.6 + @dsh-external/dsh-refdir 0.1.0 |
 | 2026-08-18 | 全部 | 上游 harness rc.5 → rc.7；建立本准则文档 |
 
 ## 六、项目与工具记录
 
-### dsh-thinking-effort（DSH 推理档位 + 引用目录插件）
+### dsh-thinking-effort（a1141171521 版）— 已卸载（2026-08-20）
 
 - 仓库：https://github.com/a1141171521/dsh-thinking-effort
-- 说明：多模块插件：① 为 OpenAI 兼容第三方模型声明 Codex 风格推理档位（Off/Low/Medium/High，默认钉 High）并在模型选择器显示 Effort 行；② 引用目录（附加文件夹）refdir_list/read/write/edit/grep 工具，白名单路径围栏。纯 JS 零第三方依赖，无需构建。
-- 已安装到本地 dsh：`pnpm dsh plugin --profile web add github:a1141171521/dsh-thinking-effort`，版本 0.5.2（安装于 2026-08-19）。
-- 兼容性：dsh 0.1.0-rc.8 静态验证通过（ESM import OK、dump-config 装配 OK、与 dsh-smooth-stream 无冲突）。
-- 本地修复：`client.js` 第 109 行 `commands.execute(sessionId, line)` → `commands.execute(sessionId, line, [])`（rc.8 新增第 3 个参数 `images`，插件未传导致报错）。下次 `pnpm install` 会覆盖，需重新打补丁。
+- 版本 0.5.2，安装于 2026-08-19，**2026-08-20 卸载**。
+- 卸载原因：拆分为 @hytime/dsh-thinking-effort（推理档位更强、免补丁）+ @dsh-external/dsh-refdir（引用目录独立插件）。
+- 本地修复记录：`client.js` 第 109 行 `commands.execute(sessionId, line)` 需补第三个参数 `[]`（rc.8 新增 `images` 参数）。
+
+### @hytime/dsh-thinking-effort（hytime 版推理档位插件）— 2026-08-20 安装
+
+- 仓库：https://github.com/hytime/dsh-thinking-effort
+- 说明：为 DSH 的 pi-ai 第三方模型补充可配置的思考强度档位。每模型可配、DSH 档位→线上值映射（如 high→ultra）、子 agent 默认档位。设置页逐模型勾选档位+自由填写 gateway 值。中英日韩多语言。走标准 slots/settings API，无 commands.execute 兼容问题，**零补丁**。
+- 已安装到本地 dsh：`@hytime/dsh-thinking-effort@latest`，版本 0.1.6（2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
+- 使用：设置 → 思考强度档位。
+
+### @dsh-external/dsh-refdir（引用目录独立插件）— 2026-08-20 创建并安装
+
+- 来源：从 a1141171521/dsh-thinking-effort 拆分 refdir 模块，独立为 vendor 插件。
+- 路径：`custom/vendor/dsh-refdir/`
+- 说明：为会话添加可读写的白名单文件夹，注册 refdir_list/read/write/edit/grep 五个动态工具。类似 Claude Desktop 附加文件夹——AI 可直读/写/搜白名单目录，不越界。
+- 已安装到本地 dsh：`pnpm dsh plugin --profile web add custom/vendor/dsh-refdir`，版本 0.1.0（2026-08-20）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过，commands.execute 已修复第三参数。
+- 美化：重写 CSS（玻璃面板、slide-up 动画、hover 过渡、品牌色强调、backdrop-filter 模糊、自定义滚动条）。
+- 使用：输入框左侧 📁 芯片 / 会话头部按钮 / 输入框 + 按钮菜单「引用目录」。
 
 ### dsh-stylevault（StyleVault 经典主题合集）
 
