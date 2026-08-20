@@ -96,20 +96,6 @@ bash custom/bin/save.sh
 | 2026-08-19 | j-space | 更新 skill：v3.6.0 → v3.6.1（SKILL.md 266 行） |
 | 2026-08-18 | 全部 | 上游 harness rc.5 → rc.7；建立本准则文档 |
 
-### dsh-client-ui-aqua（Aqua 透明玻璃主题）
-
-- 仓库：https://github.com/WYH66666666/DSH-Transparent-UI-Plugin
-- 说明：纯 CSS 玻璃质感主题，覆盖顶栏、侧边栏、输入框、统计行、轨迹视图为磨砂玻璃。可在 Web UI「Appearance」设置卡片里调节玻璃模糊度、磨砂度、背景（流体/自定义壁纸），也能单独调壁纸模糊和磨砂。总开关关闭即恢复原生界面，不改 DSH 源码。
-- 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-client-ui-aqua`，版本 1.3.1（安装于 2026-08-20）。
-- 兼容性：✅ dsh 0.1.0-rc.8 静态验证通过（dump-config 装配 OK），纯 CSS 无 WebGPU/Canvas 持续渲染，性能显著优于 open-sea-skin。
-- 注意事项：和 open-sea-skin 这种 WebGPU 皮肤不叠加使用，避免样式冲突。
-
-### dsh-client-ui-aqua（Aqua 透明玻璃主题）— 已卸载
-
-- 仓库：https://github.com/WYH66666666/DSH-Transparent-UI-Plugin
-- 版本 1.3.1，安装于 2026-08-20，**同一天卸载**（原因：`settings.plugin.item` slot 在 dsh 0.1.0-rc.8 中变为 keyed slot，要求 `options.key` 而非 `options.name`+`options.id`，插件编译产物使用旧 API 导致运行时崩溃）。
-- 卸载命令：从 `custom/dsh-home/profiles/web/package.json` 移除依赖和 bundle 声明后 `pnpm install`。
-
 ## 六、项目与工具记录
 
 ### dsh-thinking-effort（DSH 推理档位 + 引用目录插件）
@@ -131,10 +117,5 @@ bash custom/bin/save.sh
 - 兼容性：✅ dsh 0.1.0-rc.8 已适配，dump-config 装配通过。
 - 安装坑：`node-pty` 需要批准构建（`pnpm approve-builds node-pty`），否则 pnpm 安全策略拦截导致安装失败。
 
-### open-sea-skin（WebGPU 海洋皮肤）— 已卸载
-
-- 仓库：https://github.com/d-dev0101/open-sea-skin
-- 版本 1.2.1，安装于 2026-08-19，**2026-08-20 卸载**（原因：WebGPU 持续渲染导致 GPU 负载高、设备发热）。
-- 卸载命令：从 `custom/dsh-home/profiles/web/package.json` 移除依赖和 bundle 声明后 `pnpm install`。
 | 2026-08-18 | @anionex/dsh-vision-toolkit | 0.1.23 → 0.1.32 |
 | 2026-08-17 | dsh-super-injector | 本地修复 slots.register + label「超级模组」 |
