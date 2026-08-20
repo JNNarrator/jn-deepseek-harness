@@ -104,6 +104,12 @@ bash custom/bin/save.sh
 - 兼容性：✅ dsh 0.1.0-rc.8 静态验证通过（dump-config 装配 OK），纯 CSS 无 WebGPU/Canvas 持续渲染，性能显著优于 open-sea-skin。
 - 注意事项：和 open-sea-skin 这种 WebGPU 皮肤不叠加使用，避免样式冲突。
 
+### dsh-client-ui-aqua（Aqua 透明玻璃主题）— 已卸载
+
+- 仓库：https://github.com/WYH66666666/DSH-Transparent-UI-Plugin
+- 版本 1.3.1，安装于 2026-08-20，**同一天卸载**（原因：`settings.plugin.item` slot 在 dsh 0.1.0-rc.8 中变为 keyed slot，要求 `options.key` 而非 `options.name`+`options.id`，插件编译产物使用旧 API 导致运行时崩溃）。
+- 卸载命令：从 `custom/dsh-home/profiles/web/package.json` 移除依赖和 bundle 声明后 `pnpm install`。
+
 ## 六、项目与工具记录
 
 ### dsh-thinking-effort（DSH 推理档位 + 引用目录插件）
