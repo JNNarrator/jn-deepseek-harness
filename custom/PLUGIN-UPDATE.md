@@ -104,6 +104,7 @@ bash custom/bin/save.sh
 - 说明：多模块插件：① 为 OpenAI 兼容第三方模型声明 Codex 风格推理档位（Off/Low/Medium/High，默认钉 High）并在模型选择器显示 Effort 行；② 引用目录（附加文件夹）refdir_list/read/write/edit/grep 工具，白名单路径围栏。纯 JS 零第三方依赖，无需构建。
 - 已安装到本地 dsh：`pnpm dsh plugin --profile web add github:a1141171521/dsh-thinking-effort`，版本 0.5.2（安装于 2026-08-19）。
 - 兼容性：dsh 0.1.0-rc.8 静态验证通过（ESM import OK、dump-config 装配 OK、与 dsh-smooth-stream 无冲突）。
+- 本地修复：`client.js` 第 109 行 `commands.execute(sessionId, line)` → `commands.execute(sessionId, line, [])`（rc.8 新增第 3 个参数 `images`，插件未传导致报错）。下次 `pnpm install` 会覆盖，需重新打补丁。
 - 注意事项：
   - 安装后**需重启 DSH 进程**才加载（`dsh.client` 启动时扫描）。
   - 激活时自动为 `llm-pi-ai` 下模型写入 `reasoningEfforts` 声明并钉 `reasoning: high`（写 settings.yaml）；**卸载插件不会回滚**这些写入，需手动编辑 settings.yaml 移除。
