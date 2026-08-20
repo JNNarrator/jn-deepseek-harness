@@ -17,7 +17,7 @@ window.__ModuleLoader__.load({
     const { createElement: h } = React
 
     const name = "@dsh-external/dsh-refdir"
-    const inject = ["slots", "remote", "workspaces", "commandUi"]
+    const inject = ["slots", "remote", "remote.commands", "workspaces", "commandUi"]
     exports.name = name
     exports.inject = inject
 
@@ -110,9 +110,10 @@ window.__ModuleLoader__.load({
         .refdir-chip-icon { font-size: 15px; line-height: 1; }
         .refdir-chip-count {
           font-size: 10px; font-weight: 700; color: #fff;
-          background: var(--dsw-alias-brand-primary, #6366f1);
+          background: #6366f1;
           border-radius: 9px; padding: 1px 6px; min-width: 18px; text-align: center;
           line-height: 16px;
+          box-shadow: 0 1px 3px rgba(0,0,0,.25);
         }
 
         /* 会话头部按钮 */
@@ -231,16 +232,26 @@ window.__ModuleLoader__.load({
 
         /* 添加按钮 */
         .refdir-panel-add {
-          width: 100%; height: 36px; border: none; border-radius: 10px;
-          background: var(--dsw-alias-brand-primary, #6366f1);
-          color: #fff; font-size: 13px; font-weight: 600; cursor: pointer;
-          transition: all .15s; letter-spacing: .01em;
+          width: 100%; height: 36px;
+          border: 1px dashed var(--dsw-alias-border-l2, rgba(255,255,255,.18));
+          border-radius: 10px;
+          background: var(--dsw-alias-bg-layer-1, rgba(255,255,255,.04));
+          color: var(--dsw-alias-label-secondary, #a0a0b0);
+          font-size: 13px; font-weight: 500; cursor: pointer;
+          transition: all .15s ease; letter-spacing: .01em;
         }
         .refdir-panel-add:hover {
-          opacity: .9; transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(99, 102, 241, .3);
+          background: var(--dsw-alias-interactive-bg-hover, rgba(255,255,255,.08));
+          border-color: var(--dsw-alias-brand-primary, #6366f1);
+          border-style: solid;
+          color: var(--dsw-alias-label-primary, #e0e0f0);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(99, 102, 241, .15);
         }
-        .refdir-panel-add:disabled { opacity: .5; cursor: default; transform: none; box-shadow: none; }
+        .refdir-panel-add:disabled {
+          opacity: .4; cursor: default; transform: none; box-shadow: none;
+          border-color: var(--dsw-alias-border-l2, rgba(255,255,255,.08));
+        }
         .refdir-panel-add:active { transform: translateY(0); }
 
         /* 提示文字 */
