@@ -1,0 +1,366 @@
+# dsh 用户设置（Web UI 设置页也会写到这里）
+agent-presets:
+  default: router-standard
+
+ui-onboarding:
+  welcomeNoticeVersion: 2026-08-13.1
+llm-pi-ai:
+  providers:
+    jiyuan:
+      displayName: 基元
+      apiKeyEnv: JIYUAN_API_KEY
+      api: openai-completions
+      baseURL: https://tokenrhythm.studio/v1
+      models:
+        - id: deepseek-v4-flash
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: deepseek-v4-pro
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: glm-5
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: glm-5.1
+          contextWindow: 200000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: minimax-m2.7
+          contextWindow: 200000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: kimi-k2.5
+          contextWindow: 256000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: kimi-k2.6
+          contextWindow: 256000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: minimax-m2.5
+          contextWindow: 200000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: mimo-v2.5-pro
+          contextWindow: 256000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: qwen3.7-max
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: kimi-k2.7-code
+          contextWindow: 256000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: glm-5.2
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: qwen3.8-max
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: deepseek-v4-flash-0731
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: seed-2.1-turbo
+          contextWindow: 262144
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: seed-2.1-pro
+          contextWindow: 262144
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+        - id: deepseek-v4-pro-0813
+          contextWindow: 1000000
+          input: []
+          compat: {}
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+      reasoning: high
+    one-model:
+      apiKeyEnv: ONE_MODEL_API_KEY
+      api: openai-completions
+      baseURL: https://one-model.com/v1
+      models:
+        - id: qwen3.7-plus
+          name: qwen3.7-plus
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: mimo-v2.5
+          name: mimo-v2.5
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: kimi-k2.7-code
+          name: kimi-k2.7-code
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: kimi-k2.6
+          name: kimi-k2.6
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: minimax-m3
+          name: minimax-m3
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: mimo-v2.5-pro
+          name: mimo-v2.5-pro
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: deepseek-v4-flash
+          name: deepseek-v4-flash
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+          contextWindow: 1000000
+        - id: glm-5.2
+          name: glm-5.2
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: qwen3.7-max
+          name: qwen3.7-max
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: qwen3.7-plus-1m
+          name: qwen3.7-plus-1m
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: deepseek-v4-pro
+          name: deepseek-v4-pro
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+        - id: kimi-k3
+          name: kimi-k3-test
+          input: []
+          reasoningEfforts:
+            off: null
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+            max: max
+          compat: {}
+      reasoning: high
+agent-default-model:
+  provider: jiyuan
+  model: deepseek-v4-flash
+  reasoningEffort: high
+permission:
+  defaultPreset: danger-full-access
+ui-theme:
+  preference: dark
+vision-toolkit:
+  provider:
+    baseUrl: https://one-model.com/v1
+    credential: ANIONEX_FREE_VISION
+    model: mimo-v2.5
+    protocol: openai
+    anthropicThinking: omit
+    userAgent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+      like Gecko) Chrome/126.0.0.0 Safari/537.36
+  language: zh
+  timeoutMs: 60000
+  maxImageBytes: 4194304
+  maxImagePixels: 20000000
+  concurrency: 4
+  runtime:
+    mode: managed
+  allowedDirs: []

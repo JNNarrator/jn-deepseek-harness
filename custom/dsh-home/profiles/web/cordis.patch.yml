@@ -1,0 +1,6 @@
+# Your patch layer for this dsh profile, applied after every bundle layer:
+# a top-level YAML array of loader patch entries (id-targeted config
+# overrides, disables, and insert lists; `!!js` expressions allowed).
+# 注意：此层 config 里的 !!js 表达式不会求值（loader 只在 bundle 层求值），
+# 平台相关的配置请放在 cordis.patch.macos.yml（由 dsh.sh 按平台以 --patch 传入）。
+[]

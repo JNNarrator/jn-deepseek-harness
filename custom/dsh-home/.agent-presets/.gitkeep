@@ -1,0 +1,2 @@
+# 你的自定义 agent 预设放这里：custom/dsh-home/.agent-presets/<id>/agent.cordis.yml
+# （可选 preset.yml 元数据；在 Web UI 或 settings.yaml 里把默认预设切到它）
