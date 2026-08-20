@@ -18,6 +18,8 @@ window.__ModuleLoader__.load({
 
     const name = "@dsh-external/dsh-refdir"
     const inject = ["slots", "remote", "workspaces", "commandUi"]
+    exports.name = name
+    exports.inject = inject
 
     // ── 共享状态 ──
     const state = { open: false, dirs: [], workspaceCwd: "", loading: false, error: null }
@@ -131,7 +133,7 @@ window.__ModuleLoader__.load({
 
         /* 面板 */
         .refdir-panel {
-          position: absolute; bottom: calc(100% + 12px); left: 0; width: 380px;
+          position: absolute; bottom: calc(100% + 4px); left: 0; width: 380px;
           max-height: 440px; overflow-y: auto; box-sizing: border-box;
           padding: 16px; border-radius: 16px;
           background: var(--dsw-alias-bg-overlay, rgba(20, 20, 40, .92));
