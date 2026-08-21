@@ -58,8 +58,7 @@ Fill in API keys once (`custom/dsh-home/.env` or Web UI → Settings), then you'
 | `@anionex/dsh-vision-toolkit` | 0.1.35 | Vision provider integration (`mimo-v2.5`) |
 | `@dsh-external/dsh-mode-boost` | link | Task-aware reasoning-mode routing boost |
 | `@dsh-external/dsh-refdir` | link | Reference-directory tools (whitelisted folders, Claude-Desktop style) |
-| `@dsh-external/dsh-super-injector` | link | Runtime plugin injection (BepInEx-style) |
-| `@hytime/dsh-thinking-effort` | 0.1.6 | Reasoning-effort levels for third-party models |
+| `@hytime/dsh-thinking-effort` | 0.1.7 | Reasoning-effort levels for third-party models |
 | `@zebbkira/dsh-skills-mcp-manager` | 0.1.3 | Skills ↔ MCP bridge |
 | `dsh-better-sidebar` | 0.14.0 | Service-oriented sidebar: files, terminal, Git, sub-agents |
 | `dsh-font` | 1.1.0 | UI/code font switcher (99 UI + 31 code fonts, CN/EN pairing) |

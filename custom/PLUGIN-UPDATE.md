@@ -9,12 +9,10 @@
 
 | 插件 | 本地版本 | 上游 | 检查方式 |
 |---|---|---|---|
-| `dsh-super-injector`（超级模组注入器） | 0.3.3 | `github.com/yjh051108/dsh-super-injector` | GitHub Releases API |
 | `dsh-mode-boost`（模式提升插件） | 0.1.0 | `github.com/yjh051108/dsh-mode-boost` | GitHub Releases API |
 
 > vendor 里的插件是源码快照（含 `lib/` 编译产物），不走 npm，靠手动拉上游更新。
-> 注意：`dsh-super-injector` 的 `lib/client.js` 做过本地修复（`slots.register` 双参数
-> React 组件 + label 改为「超级模组」）。上游同步后要重新确认该修复是否仍存在。
+> `dsh-refdir` 为本地自建插件（从 dsh-thinking-effort 拆分），无上游，不在此列。
 
 ### 2. npm 依赖（`custom/dsh-home/profiles/web/package.json`）
 
@@ -78,12 +76,10 @@ bash custom/bin/save.sh
    「零 Python 自动下载」，但显式覆盖仍优先，不受影响。
 3. **Skill 改名**：vision-toolkit 0.1.31 起，内置 Skill 从 `vision-tools` 改名为
    `vision-skills`。旧会话仍能从 `vision-tools` 历史恢复激活，新会话用 `/vision-skills`。
-4. **super-injector 本地修复**：vendor 里的 `lib/client.js` 有本地修复（见上文），
-   同步上游后要 diff 确认修复未被覆盖。
-5. **非交互 shell 无 pnpm**：脚本里跑 `pnpm` 前必须先 `source $NVM_DIR/nvm.sh`
+4. **非交互 shell 无 pnpm**：脚本里跑 `pnpm` 前必须先 `source $NVM_DIR/nvm.sh`
    切 Node 24，否则 `pnpm: command not found`（lefthook 的 typecheck 也会因此失败，
    提交时用 `--no-verify` 跳过环境受限的钩子）。
-6. **settings.yaml 的 provider 配置**：升级插件不会动 `custom/dsh-home/settings.yaml`
+5. **settings.yaml 的 provider 配置**：升级插件不会动 `custom/dsh-home/settings.yaml`
    里的 `vision-toolkit.provider` 等用户配置，升级后无需重配，但要留意新版本
    是否有 schema 变更（查上游 CHANGELOG）。
 
@@ -91,11 +87,14 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | dsh-super-injector | 卸载（无用）；移除 vendor + bundle + 运行时目录 |
+| 2026-08-21 | @hytime/dsh-thinking-effort | latest 自动升级 0.1.6 → 0.1.7 |
 | 2026-08-19 | dsh-mode-boost | 新增 vendor 0.1.0 + 注册到 profile |
 | 2026-08-19 | router-standard | 更新预设：0.1.x → 0.2.0（拆分为 router-spec + router-standard 双预设，新增 bootstrap v5-v8） |
 | 2026-08-19 | j-space | 更新 skill：v3.6.0 → v3.6.1（SKILL.md 266 行） |
 | 2026-08-20 | dsh-thinking-effort | 卸载 0.5.2（a1141171521），拆分为 @hytime/dsh-thinking-effort 0.1.6 + @dsh-external/dsh-refdir 0.1.0 |
 | 2026-08-18 | 全部 | 上游 harness rc.5 → rc.7；建立本准则文档 |
+| 2026-08-18 | @anionex/dsh-vision-toolkit | 0.1.23 → 0.1.32 |
 
 ## 六、项目与工具记录
 
@@ -110,7 +109,7 @@ bash custom/bin/save.sh
 
 - 仓库：https://github.com/hytime/dsh-thinking-effort
 - 说明：为 DSH 的 pi-ai 第三方模型补充可配置的思考强度档位。每模型可配、DSH 档位→线上值映射（如 high→ultra）、子 agent 默认档位。设置页逐模型勾选档位+自由填写 gateway 值。中英日韩多语言。走标准 slots/settings API，无 commands.execute 兼容问题，**零补丁**。
-- 已安装到本地 dsh：`@hytime/dsh-thinking-effort@latest`，版本 0.1.6（2026-08-20）。
+- 已安装到本地 dsh：`@hytime/dsh-thinking-effort@latest`，版本 0.1.7（2026-08-21，latest 自动升级自 0.1.6）。
 - 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
 - 使用：设置 → 思考强度档位。
 
@@ -160,5 +159,9 @@ bash custom/bin/save.sh
 - 兼容性：✅ dsh 0.1.0-rc.8 已适配，dump-config 装配通过。
 - 安装坑：`node-pty` 需要批准构建（`pnpm approve-builds node-pty`），否则 pnpm 安全策略拦截导致安装失败。
 
-| 2026-08-18 | @anionex/dsh-vision-toolkit | 0.1.23 → 0.1.32 |
-| 2026-08-17 | dsh-super-injector | 本地修复 slots.register + label「超级模组」 |
+### dsh-super-injector（超级模组注入器）— 已卸载（2026-08-21）
+
+- 仓库：https://github.com/yjh051108/dsh-super-injector
+- 版本 0.3.3，vendor 源码快照，**2026-08-21 卸载**。
+- 卸载原因：实际无用（运行时插件注入/热重载/侧挂转正能力未用上）。
+- 卸载内容：`custom/vendor/dsh-super-injector/`（git rm）、`custom/dsh-home/profiles/web/package.json` 的依赖 + bundle 声明、`custom/dsh-home/super-injector/` 运行时目录（self-heal.log）、`custom/.gitignore` 的 `!vendor/dsh-super-injector/lib/` 豁免。

@@ -4,7 +4,6 @@
   "dependencies": {
     "@anionex/dsh-vision-toolkit": "^0.1.35",
     "@dsh-external/dsh-mode-boost": "link:../../../vendor/dsh-mode-boost",
-    "@dsh-external/dsh-super-injector": "link:../../../vendor/dsh-super-injector",
     "@zebbkira/dsh-skills-mcp-manager": "^0.1.3",
     "dsh-better-sidebar": "^0.14.0",
     "dsh-playwright-browser": "^0.1.3",
@@ -19,7 +18,6 @@
       "bundles": [
         "@deepseek-ai/dsh-base",
         "@deepseek-ai/dsh-web-app",
-        "@dsh-external/dsh-super-injector",
         "@dsh-external/dsh-mode-boost",
         "dsh-better-sidebar",
         "dsh-playwright-browser",

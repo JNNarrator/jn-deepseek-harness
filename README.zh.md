@@ -60,8 +60,7 @@ custom/bin/dsh.sh
 | `@anionex/dsh-vision-toolkit` | 0.1.35 | 视觉模型接入（`mimo-v2.5`） |
 | `@dsh-external/dsh-mode-boost` | link | 任务感知思维模式路由提升 |
 | `@dsh-external/dsh-refdir` | link | 引用目录工具（白名单文件夹，类 Claude Desktop） |
-| `@dsh-external/dsh-super-injector` | link | 运行时插件注入（BepInEx 式） |
-| `@hytime/dsh-thinking-effort` | 0.1.6 | 第三方模型推理档位 |
+| `@hytime/dsh-thinking-effort` | 0.1.7 | 第三方模型推理档位 |
 | `@zebbkira/dsh-skills-mcp-manager` | 0.1.3 | Skills ↔ MCP 桥接 |
 | `dsh-better-sidebar` | 0.14.0 | 服务化侧边栏：文件、终端、Git、子代理 |
 | `dsh-font` | 1.1.0 | 界面/代码字体切换（99 + 31 款，中西文搭配） |
