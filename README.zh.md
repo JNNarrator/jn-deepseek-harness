@@ -64,7 +64,6 @@ custom/bin/dsh.sh
 | `dsh-effort-slider` | 0.2.5 | 仿 Claude Code 推理等级滑块（无极拖动 + WebGL 火焰） |
 | `dsh-font` | 1.1.0 | 界面/代码字体切换（99 + 31 款，中西文搭配） |
 | `dsh-liquid-glass` | 0.1.0 | 液态玻璃半透明主题 |
-| `dsh-plan-switch` | 0.3.0 | 输入框一键进出 Plan 模式按钮 |
 | `dsh-playwright-browser` | 0.1.3 | 浏览器自动化 |
 | `dsh-skill-mcp-panel` | 2.0.1 | 技能 & MCP 管理面板（Web 设置页 + `dsh-panel` CLI） |
 | `dsh-skill-picker` | 0.2.0 | 输入框技能选择器（搜索+点选插入 `/技能名` 手势） |

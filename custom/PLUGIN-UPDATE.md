@@ -22,7 +22,6 @@
 | `dsh-playwright-browser` | `^0.1.3` | npm | `npm view` |
 | `dsh-skill-mcp-panel` | `.../v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz` | GitHub Releases | GitHub Releases API |
 | `dsh-tick-rail` | `.../v0.1.5/dsh-tick-rail-0.1.5.tgz` | GitHub Releases | GitHub Releases API |
-| `dsh-plan-switch` | `github:a903067276-rgb/dsh-plan-switch` | GitHub main | GitHub API（无 release） |
 | `dsh-skill-picker` | `github:a735624258/dsh-skill-picker` | GitHub main | GitHub API（无 release） |
 | `dsh-effort-slider` | `github:2768651338/dsh-effort-slider` | GitHub main | GitHub API（无 release） |
 
@@ -55,7 +54,7 @@ for repo in Fishquito7/dsh-skill-mcp-panel caisiyang123/dsh-tick-rail; do
 done
 
 # git 直装插件（无 release，查默认分支最新 commit）
-for repo in a903067276-rgb/dsh-plan-switch a735624258/dsh-skill-picker 2768651338/dsh-effort-slider; do
+for repo in a735624258/dsh-skill-picker 2768651338/dsh-effort-slider; do
   echo -n "$repo 最新 commit="; curl -sS "https://api.github.com/repos/$repo/commits" \
     | python3 -c "import sys,json;d=json.load(sys.stdin);print(d[0]['sha'][:8], d[0]['commit']['committer']['date'])"
 done
@@ -103,8 +102,8 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | dsh-plan-switch | 卸载（有 bug） |
 | 2026-08-21 | dsh-tick-rail | 新增 0.1.5（GitHub Releases tarball） |
-| 2026-08-21 | dsh-plan-switch | 新增 0.3.0（git 直装） |
 | 2026-08-21 | dsh-skill-picker | 新增 0.2.0（git 直装） |
 | 2026-08-21 | dsh-effort-slider | 新增 0.2.5（git 直装）；替代 @hytime/dsh-thinking-effort |
 | 2026-08-21 | @hytime/dsh-thinking-effort | 卸载（替换为 dsh-effort-slider，交互更佳） |
@@ -201,13 +200,12 @@ bash custom/bin/save.sh
 - 已安装版本：0.1.5（2026-08-21）。
 - 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: dsh-tick-rail）。
 
-### dsh-plan-switch（Plan 模式一键切换）— 2026-08-21 安装
+### dsh-plan-switch（Plan 模式一键切换）— 已卸载（2026-08-21）
 
 - 仓库：https://github.com/a903067276-rgb/dsh-plan-switch
-- 说明：输入框一键进/出 Plan 模式按钮（挂 `conversation.input.left` 插槽），点击执行官方 `/plan` 命令，全流程走官方命令链。plan 进行中自动隐藏、pending 防反。纯前端，host 空实现，macOS 全功能实测。
-- 安装方式：`github:a903067276-rgb/dsh-plan-switch`（无 release，git 直装；无 install 脚本，不触发 allowBuilds）。
-- 已安装版本：0.3.0（2026-08-21）。
-- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: plan-switch）。
+- 说明：输入框一键进/出 Plan 模式按钮（挂 `conversation.input.left` 插槽），点击执行官方 `/plan` 命令，全流程走官方命令链。
+- 安装历史：0.3.0（2026-08-21 安装）。
+- **2026-08-21 卸载**：有 bug（用户反馈）。移除依赖 + bundle 声明，install 自动清理。
 
 ### dsh-skill-picker（输入框技能选择器）— 2026-08-21 安装
 
