@@ -18,7 +18,7 @@
 
 | 插件 | 依赖声明 | 上游 | 检查方式 |
 |---|---|---|---|
-| `@anionex/dsh-vision-toolkit` | `^0.1.23` | npm | `npm view` |
+| `@anionex/dsh-vision-toolkit` | `^0.1.38` | npm | `npm view` |
 | `@zebbkira/dsh-skills-mcp-manager` | `^0.1.3` | npm | `npm view` |
 | `dsh-playwright-browser` | `^0.1.3` | npm | `npm view` |
 
@@ -87,6 +87,8 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | @anionex/dsh-vision-toolkit | 0.1.35 → 0.1.38（pnpm 自动记入 release-age 豁免） |
+| 2026-08-21 | dsh-smooth-stream | 0.3.3 → 0.3.4（pnpm 自动记入 release-age 豁免） |
 | 2026-08-21 | dsh-super-injector | 卸载（无用）；移除 vendor + bundle + 运行时目录 |
 | 2026-08-21 | @hytime/dsh-thinking-effort | latest 自动升级 0.1.6 → 0.1.7 |
 | 2026-08-19 | dsh-mode-boost | 新增 vendor 0.1.0 + 注册到 profile |
