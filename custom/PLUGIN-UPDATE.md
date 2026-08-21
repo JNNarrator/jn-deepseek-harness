@@ -21,6 +21,7 @@
 | `@anionex/dsh-vision-toolkit` | `^0.1.38` | npm | `npm view` |
 | `dsh-playwright-browser` | `^0.1.3` | npm | `npm view` |
 | `dsh-skill-mcp-panel` | `.../v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz` | GitHub Releases | GitHub Releases API |
+| `dsh-super-injector` | `.../v0.3.3/dsh-external-dsh-super-injector-0.3.3.tgz` | GitHub Releases | GitHub Releases API |
 | `dsh-tick-rail` | `.../v0.1.5/dsh-tick-rail-0.1.5.tgz` | GitHub Releases | GitHub Releases API |
 | `dsh-skill-picker` | `github:a735624258/dsh-skill-picker` | GitHub main | GitHub API（无 release） |
 | `dsh-effort-slider` | `github:2768651338/dsh-effort-slider` | GitHub main | GitHub API（无 release） |
@@ -112,6 +113,7 @@ bash custom/bin/save.sh
 | 日期 | 插件 | 变更 |
 |---|---|---|
 | 2026-08-21 | router-standard | 更新预设 0.2.0 → 0.3.0（首轮路由真实生效、引导改走 agent/pre-step、修复 extractText/bandOf 缺导入等） |
+| 2026-08-21 | dsh-super-injector | 重新安装 0.3.3（GitHub Releases tarball）；运行时注入器，dev_* 工具族 + 热重载 |
 | 2026-08-21 | @kelearns/dsh-navigation-bar | 新增 0.2.1（npm） |
 | 2026-08-21 | dsh-ui-font | 新增 0.9.2（git 直装）；替代 dsh-font |
 | 2026-08-21 | dsh-font | 卸载（不能调字号，替换为 dsh-ui-font） |
