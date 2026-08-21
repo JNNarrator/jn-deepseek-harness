@@ -170,6 +170,13 @@ bash custom/bin/save.sh
 - 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过，commands.execute 已修复第三参数。
 - 美化：重写 CSS（玻璃面板、slide-up 动画、hover 过渡、品牌色强调、backdrop-filter 模糊、自定义滚动条）。
 - 使用：输入框左侧 📁 芯片 / 会话头部按钮 / 输入框 + 按钮菜单「引用目录」。
+- **本地补丁（2026-08-21）**：
+  - 面板：
+    - `width:380px` → `min(380px, 100%)`，防止窄窗口溢出
+    - `max-height:440px` → `min(440px, calc(100vh - 120px))`，适配小窗口
+    - `background` 改用固定深色 `rgba(28,28,40,.95)`，避免 `--dsw-alias-bg-overlay` 在某些主题下解析为白色
+    - `z-index:300` → `100`，与宿主浮层同级，不再遮挡斜杠菜单
+  - 芯片角标：`.refdir-chip-count` 背景色固定为 `#6366f1`，避免主题覆盖 `--dsw-alias-brand-primary` 导致徽章显示为白色块（文字看不见）
 
 ### dsh-stylevault（StyleVault 经典主题合集）
 

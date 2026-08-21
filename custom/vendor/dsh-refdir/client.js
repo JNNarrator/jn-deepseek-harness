@@ -114,7 +114,8 @@ window.__ModuleLoader__.load({
         .refdir-chip:hover .refdir-chip-icon { opacity: 1; }
         .refdir-chip-count {
           font-size: 10px; font-weight: 600; color: #fff;
-          background: var(--dsw-alias-brand-primary, #6366f1);
+          /* 固定品牌色，避免主题变量覆盖导致背景/文字同色 */
+          background: #6366f1;
           border-radius: 6px; padding: 1px 5px; min-width: 16px; text-align: center;
           line-height: 14px;
         }
@@ -139,14 +140,18 @@ window.__ModuleLoader__.load({
 
         /* 面板 */
         .refdir-panel {
-          position: absolute; bottom: calc(100% + 4px); left: 0; width: 380px;
-          max-height: 440px; overflow-y: auto; box-sizing: border-box;
+          position: absolute; bottom: calc(100% + 4px); left: 0;
+          /* 跟随卡片宽度，避免溢出；钳制最大宽度保持可读性 */
+          width: min(380px, 100%);
+          max-height: min(440px, calc(100vh - 120px)); overflow-y: auto; box-sizing: border-box;
           padding: 16px; border-radius: 16px;
-          background: var(--dsw-alias-bg-overlay, rgba(20, 20, 40, .92));
+          /* 强制深色背景，避免主题变量解析为白色 */
+          background: rgba(28, 28, 40, .95);
           border: 1px solid var(--dsw-alias-border-l2, rgba(255,255,255,.1));
           box-shadow: 0 12px 40px rgba(0, 0, 0, .35), 0 0 0 1px rgba(99, 102, 241, .08);
           font-size: 13px; color: var(--dsw-alias-label-primary, #e0e0f0);
-          z-index: 300; animation: refdir-slide-up .18s ease-out;
+          /* 与宿主浮层同级，不压过斜杠菜单/命令弹层 */
+          z-index: 100; animation: refdir-slide-up .18s ease-out;
           backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
         }
         @keyframes refdir-slide-up {
