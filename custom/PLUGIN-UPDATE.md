@@ -112,6 +112,7 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | 全部 | 同步上游 harness 0.1.0-rc.8 → 0.1.1-rc.1（merge upstream/master @ 528c682e0，2366 文件）；README.zh.md 冲突保留 fork 版，custom 定制层无冲突 |
 | 2026-08-21 | router-standard | 更新预设 0.2.0 → 0.3.0（首轮路由真实生效、引导改走 agent/pre-step、修复 extractText/bandOf 缺导入等） |
 | 2026-08-21 | dsh-super-injector | 重新安装 0.3.3（GitHub Releases tarball）；运行时注入器，dev_* 工具族 + 热重载 |
 | 2026-08-21 | @kelearns/dsh-navigation-bar | 新增 0.2.1（npm） |
