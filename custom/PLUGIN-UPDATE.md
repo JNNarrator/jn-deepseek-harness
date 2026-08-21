@@ -25,6 +25,7 @@
 | `dsh-skill-picker` | `github:a735624258/dsh-skill-picker` | GitHub main | GitHub API（无 release） |
 | `dsh-effort-slider` | `github:2768651338/dsh-effort-slider` | GitHub main | GitHub API（无 release） |
 | `dsh-ui-font` | `github:warmwine/dsh-ui-font` | GitHub main | GitHub API（无 release） |
+| `@kelearns/dsh-navigation-bar` | `^0.2.1` | npm | `npm view` |
 
 ### 3. 预设 + Skill（文件拷贝，不走 npm）
 
@@ -98,6 +99,12 @@ bash custom/bin/save.sh
 5. **settings.yaml 的 provider 配置**：升级插件不会动 `custom/dsh-home/settings.yaml`
    里的 `vision-toolkit.provider` 等用户配置，升级后无需重配，但要留意新版本
    是否有 schema 变更（查上游 CHANGELOG）。
+6. **dsh-skill-picker 本地补丁**（node_modules 补丁，`pnpm install` 后需重新打）：
+   - **slot 位置**：`lib/client.js` + `src/client.jsx` 中 `conversation.input.right` →
+     `conversation.input.left`，order 100 → 60（挪到左侧工具栏，紧跟 refdir 文件夹图标之后）。
+   - **图标风格**：`custom/vendor/dsh-refdir/client.js` 的 CSS 覆盖（git 跟踪），
+     将闪电图标的渐变填充改为 Lucide 线条风格（`fill:none; stroke:currentColor; stroke-width:2`）。
+   - 重装后重新打补丁：`sed -i '' 's/conversation\.input\.right/conversation.input.left/g; s/order: 100/order: 60/g' node_modules/dsh-skill-picker/lib/client.js`
 
 ## 五、历史记录
 
