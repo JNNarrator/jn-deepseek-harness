@@ -24,6 +24,7 @@
 | `dsh-tick-rail` | `.../v0.1.5/dsh-tick-rail-0.1.5.tgz` | GitHub Releases | GitHub Releases API |
 | `dsh-skill-picker` | `github:a735624258/dsh-skill-picker` | GitHub main | GitHub API（无 release） |
 | `dsh-effort-slider` | `github:2768651338/dsh-effort-slider` | GitHub main | GitHub API（无 release） |
+| `dsh-ui-font` | `github:warmwine/dsh-ui-font` | GitHub main | GitHub API（无 release） |
 
 ### 3. 预设 + Skill（文件拷贝，不走 npm）
 
@@ -54,7 +55,7 @@ for repo in Fishquito7/dsh-skill-mcp-panel caisiyang123/dsh-tick-rail; do
 done
 
 # git 直装插件（无 release，查默认分支最新 commit）
-for repo in a735624258/dsh-skill-picker 2768651338/dsh-effort-slider; do
+for repo in a735624258/dsh-skill-picker 2768651338/dsh-effort-slider warmwine/dsh-ui-font; do
   echo -n "$repo 最新 commit="; curl -sS "https://api.github.com/repos/$repo/commits" \
     | python3 -c "import sys,json;d=json.load(sys.stdin);print(d[0]['sha'][:8], d[0]['commit']['committer']['date'])"
 done
@@ -102,6 +103,8 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | dsh-ui-font | 新增 0.9.2（git 直装）；替代 dsh-font |
+| 2026-08-21 | dsh-font | 卸载（不能调字号，替换为 dsh-ui-font） |
 | 2026-08-21 | dsh-plan-switch | 卸载（有 bug） |
 | 2026-08-21 | dsh-tick-rail | 新增 0.1.5（GitHub Releases tarball） |
 | 2026-08-21 | dsh-skill-picker | 新增 0.2.0（git 直装） |
@@ -163,13 +166,21 @@ bash custom/bin/save.sh
 - 版本 0.3.0，2026-08-20 安装，**同日卸载**（用更轻的 dsh-font + dsh-liquid-glass 替代）。
 - 卸载命令：从 `custom/dsh-home/profiles/web/package.json` 移除依赖和 bundle 声明后 `pnpm install`。
 
-### dsh-font（DSH 字体切换器）
+### dsh-font（DSH 字体切换器）— 已卸载（2026-08-21）
 
 - 仓库：https://github.com/tianyhjg-lab/dsh-font
 - 说明：99 个界面字体 + 31 个代码字体，中文（黑体/宋体/楷仿/手写）+ 西文（衬线/无衬线/展示）全分组覆盖，中西文自动搭配，即选即生效，localStorage 持久化。改 `--dsw-font-family` 和 `--ds-font-family-code` 两个 token 全局生效，不打包字体文件不联网。
-- 已安装到本地 dsh：`dsh plugin --profile web add github:tianyhjg-lab/dsh-font`，版本 1.1.0（安装于 2026-08-20）。
-- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
-- 使用：设置 → 常规 → 字体，选择界面字体/代码字体。
+- 安装历史：`dsh plugin --profile web add github:tianyhjg-lab/dsh-font`，版本 1.1.0（2026-08-20 安装）。
+- **2026-08-21 卸载**：只能换字体、不能调节字号，用户反馈后替换为 dsh-ui-font（支持全局字号缩放 + 准星逐区微调）。
+
+### dsh-ui-font（全局字号/字体工具，老花眼插件）— 2026-08-21 安装
+
+- 仓库：https://github.com/warmwine/dsh-ui-font
+- 说明：全局字号缩放（-3~+20px 滑杆，立即生效）；普通文字/代码字体分别从系统已装字体里选（host 侧 sfnt name 表纯 fs 解析，无子进程）；🎯 准星选取：点哪调哪（同类文字全局统一、插件组件单独调、其它兜底跟全局）；每块界面单独微调（全局偏移 + 个体偏移叠加）；三个可录快捷键槽。
+- 安装方式：`github:warmwine/dsh-ui-font`（无 release，git 直装；lib/ 已提交、无 install 脚本，不触发 allowBuilds）。
+- 已安装版本：0.9.2（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: ui-font）。host 侧依赖 `webServer` 服务注册 `/api/dsh-ui-font/fonts` + `/api/dsh-ui-font/descriptions` 两个 loopback 路由。
+- 使用：设置 → 字体（settings.section，order 95）。
 
 ### dsh-liquid-glass（液态玻璃主题）
 
@@ -178,7 +189,7 @@ bash custom/bin/save.sh
 - 已安装到本地 dsh：`dsh plugin --profile web add dsh-liquid-glass`，版本 0.1.0（安装于 2026-08-20）。
 - 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
 - 使用：设置 → 通用 → 液态玻璃。偏好存 localStorage，卸载后无害残留。
-- 注意：和 dsh-font 同属样式层，叠加使用无冲突。
+- 注意：和 dsh-ui-font 同属样式层，叠加使用无冲突。
 - 注意事项：
   - 安装后**需重启 DSH 进程**才加载（`dsh.client` 启动时扫描）。
   - 激活时自动为 `llm-pi-ai` 下模型写入 `reasoningEfforts` 声明并钉 `reasoning: high`（写 settings.yaml）；**卸载插件不会回滚**这些写入，需手动编辑 settings.yaml 移除。
