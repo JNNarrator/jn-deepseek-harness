@@ -94,43 +94,48 @@ window.__ModuleLoader__.load({
         /* 芯片按钮 */
         .refdir-chip {
           flex: none; display: inline-flex; align-items: center; justify-content: center;
-          gap: 4px; height: 30px; min-width: 30px; padding: 0 8px;
-          border: 1px solid var(--dsw-alias-border-l2, rgba(255,255,255,.12));
-          border-radius: 10px; background: var(--dsw-alias-bg-layer-1, rgba(255,255,255,.06));
-          color: var(--dsw-alias-label-secondary, #a0a0b0); cursor: pointer;
+          gap: 4px; height: 28px; min-width: 28px; padding: 0 8px;
+          border: 1px solid var(--dsw-alias-border-subtle, rgba(255,255,255,.06));
+          border-radius: 8px;
+          background: var(--dsw-alias-surface-secondary, rgba(255,255,255,.04));
+          color: var(--dsw-alias-label-tertiary, #8888a0); cursor: pointer;
           font-size: 13px; line-height: 1; transition: all .15s ease;
-          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          align-self: center;
         }
         .refdir-chip:hover {
-          background: var(--dsw-alias-interactive-bg-hover, rgba(255,255,255,.12));
-          border-color: var(--dsw-alias-brand-primary, #6366f1);
+          background: var(--dsw-alias-surface-tertiary, rgba(255,255,255,.08));
+          border-color: var(--dsw-alias-border-hover, rgba(255,255,255,.12));
           color: var(--dsw-alias-label-primary, #e0e0f0);
-          transform: translateY(-1px); box-shadow: 0 2px 8px rgba(99, 102, 241, .15);
         }
-        .refdir-chip-icon { font-size: 15px; line-height: 1; }
+        .refdir-chip-icon {
+          width: 16px; height: 16px; flex: none;
+          opacity: .75; transition: opacity .15s;
+        }
+        .refdir-chip:hover .refdir-chip-icon { opacity: 1; }
         .refdir-chip-count {
-          font-size: 10px; font-weight: 700; color: #fff;
-          background: #6366f1;
-          border-radius: 9px; padding: 1px 6px; min-width: 18px; text-align: center;
-          line-height: 16px;
-          box-shadow: 0 1px 3px rgba(0,0,0,.25);
+          font-size: 10px; font-weight: 600; color: #fff;
+          background: var(--dsw-alias-brand-primary, #6366f1);
+          border-radius: 6px; padding: 1px 5px; min-width: 16px; text-align: center;
+          line-height: 14px;
         }
 
-        /* 会话头部按钮 */
+        /* 头部按钮 */
         .refdir-header {
-          display: inline-flex; align-items: center; gap: 5px; height: 28px;
-          padding: 0 12px; border: 1px solid var(--dsw-alias-border-l2, rgba(255,255,255,.1));
-          border-radius: 10px; background: var(--dsw-alias-bg-layer-1, rgba(255,255,255,.04));
-          color: var(--dsw-alias-label-secondary, #a0a0b0); font-size: 12px;
+          display: inline-flex; align-items: center; gap: 4px; height: 26px;
+          padding: 0 6px; border: none; border-radius: 6px;
+          background: transparent;
+          color: var(--dsw-alias-label-tertiary, #8888a0); font-size: 12px;
           cursor: pointer; transition: all .15s ease;
-          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
         .refdir-header:hover {
-          background: var(--dsw-alias-interactive-bg-hover, rgba(255,255,255,.1));
-          border-color: var(--dsw-alias-brand-primary, #6366f1);
+          background: var(--dsw-alias-interactive-bg-hover, rgba(255,255,255,.08));
           color: var(--dsw-alias-label-primary, #e0e0f0);
-          box-shadow: 0 2px 8px rgba(99, 102, 241, .12);
         }
+        .refdir-header-icon {
+          width: 14px; height: 14px; flex: none;
+          opacity: .6; transition: opacity .15s;
+        }
+        .refdir-header:hover .refdir-header-icon { opacity: 1; }
 
         /* 面板 */
         .refdir-panel {
@@ -270,6 +275,32 @@ window.__ModuleLoader__.load({
         return state
       }
 
+      // 共享图标
+      const FolderIcon = ({ cls }) => h("svg", {
+        className: cls, viewBox: "0 0 24 24", fill: "none",
+        stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }, h("path", { d: "M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" }))
+      const FolderOpenIcon = ({ cls }) => h("svg", {
+        className: cls, viewBox: "0 0 24 24", fill: "none",
+        stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }, h("path", { d: "M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9L9.66 6.5" }))
+      const AlertIcon = ({ cls }) => h("svg", {
+        className: cls, viewBox: "0 0 24 24", fill: "none",
+        stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }, [
+        h("circle", { cx: "12", cy: "12", r: "10", key: "c" }),
+        h("line", { x1: "12", y1: "8", x2: "12", y2: "12", key: "l1" }),
+        h("line", { x1: "12", y1: "16", x2: "12.01", y2: "16", key: "l2" })
+      ])
+      const LoaderIcon = ({ cls }) => h("svg", {
+        className: cls, viewBox: "0 0 24 24", fill: "none",
+        stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }, h("path", { d: "M21 12a9 9 0 1 1-6.219-8.56" }))
+      const PlusIcon = ({ cls }) => h("svg", {
+        className: cls, viewBox: "0 0 24 24", fill: "none",
+        stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round"
+      }, h("path", { d: "M12 5v14M5 12h14" }))
+
       // 芯片按钮（输入框左侧）
       const Chip = (props) => {
         const s = useSharedState()
@@ -281,7 +312,7 @@ window.__ModuleLoader__.load({
           "aria-label": "引用目录", "aria-expanded": s.open,
           onClick: () => toggle(ctx, sessionId),
         },
-          h("span", { className: "refdir-chip-icon", "aria-hidden": true }, "📁"),
+          h(FolderIcon, { cls: "refdir-chip-icon" }),
           count > 0 ? h("span", { className: "refdir-chip-count" }, String(count)) : null,
         )
       }
@@ -294,7 +325,10 @@ window.__ModuleLoader__.load({
           type: "button", className: "refdir-header", "data-refdir-header": true,
           title: "引用目录（点击管理）",
           onClick: () => toggle(ctx, props.sessionId),
-        }, "📁 引用目录" + (count > 0 ? " · " + count : ""))
+        },
+          h(FolderIcon, { cls: "refdir-header-icon" }),
+          "引用目录" + (count > 0 ? " · " + count : "")
+        )
       }
 
       // 管理面板
@@ -317,7 +351,7 @@ window.__ModuleLoader__.load({
         return h("div", { className: "refdir-panel", "data-refdir-panel": true, role: "dialog", "aria-label": "引用目录" },
           // 标题行
           h("div", { className: "refdir-panel-top" },
-            h("span", { className: "refdir-panel-title" }, "📁 引用目录"),
+            h("span", { className: "refdir-panel-title" }, h(FolderIcon, { cls: "refdir-panel-title-icon" }), " 引用目录"),
             h("button", { type: "button", className: "refdir-panel-close", "aria-label": "关闭",
               onClick: () => setState({ open: false }) }, "✕"),
           ),
@@ -329,13 +363,13 @@ window.__ModuleLoader__.load({
           // 目录列表或空状态
           s.dirs.length === 0 && !s.loading
             ? h("div", { className: "refdir-panel-empty" },
-                h("span", { className: "refdir-panel-empty-icon" }, "📂"),
+                h(FolderOpenIcon, { cls: "refdir-panel-empty-icon" }),
                 "还没有引用目录",
                 h("br"),
                 "添加后，AI 可读取并操作这些文件夹中的文件")
             : h("div", { className: "refdir-panel-list" },
                 s.dirs.map((d) => h("div", { key: d.id, className: "refdir-panel-row" },
-                  h("span", { className: "refdir-panel-row-icon" }, "📁"),
+                  h(FolderIcon, { cls: "refdir-panel-row-icon" }),
                   h("span", { className: "refdir-panel-row-main", title: d.path },
                     h("span", { className: "refdir-panel-row-title" }, d.title),
                     h("span", { className: "refdir-panel-row-path" }, d.path),
@@ -347,13 +381,13 @@ window.__ModuleLoader__.load({
               ),
           // 错误
           s.error ? h("div", { className: "refdir-panel-error" },
-            h("span", null, "⚠"), " ", s.error
+            h("span", null, h(AlertIcon, { cls: "refdir-panel-alert-icon" })), " ", s.error
           ) : null,
           // 添加按钮
           h("button", { type: "button", className: "refdir-panel-add",
             disabled: s.loading,
             onClick: () => addDir(ctx, sessionId) },
-            s.loading ? "⏳ 处理中…" : "＋ 添加引用目录"
+            s.loading ? h("span", null, h(LoaderIcon, { cls: "refdir-panel-loader-icon" }), " 处理中…") : h("span", null, h(PlusIcon, { cls: "refdir-panel-plus-icon" }), " 添加引用目录")
           ),
           // 提示
           h("div", { className: "refdir-panel-hint" },
@@ -392,8 +426,8 @@ window.__ModuleLoader__.load({
                 dirs = data && Array.isArray(data.dirs) ? data.dirs : []
               } catch (e) { dirs = [] }
               return [
-                { id: "add", label: "＋ 添加引用目录", detail: "从磁盘选择文件夹" },
-                ...dirs.map((d) => ({ id: "dir:" + d.id, label: "📁 " + d.title, detail: d.path, active: true })),
+                { id: "add", label: "添加引用目录", detail: "从磁盘选择文件夹" },
+                ...dirs.map((d) => ({ id: "dir:" + d.id, label: d.title, detail: d.path, active: true })),
               ]
             },
             onSelect: async (option, session) => {
