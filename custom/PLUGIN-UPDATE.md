@@ -209,7 +209,8 @@ bash custom/bin/save.sh
 - 说明：会话旁一列刻度线当提问索引（每发一条消息一个刻度，跳过助手回复）。峰值高亮（最长刻度点亮 + 周围衰减）、悬停预览、点击跳转。纯 Web 客户端插件，挂 `shell.overlay` 插槽，跟随主题 token。
 - 安装方式：GitHub Releases tarball（README 提醒勿用 git 直装，会触发 pnpm allowBuilds 拦截）。
 - 已安装版本：0.1.5（2026-08-21）。
-- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: dsh-tick-rail）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: dsh-tick-rail）。已用 CDP 无头浏览器实测：组件正常挂载 `shell.overlay`、无 JS 错误。
+- **显示条件（易误判为“没生效”）**：源码 `MIN_TICKS = 3`，只有**自己发的消息 ≥ 3 条**（仅 user/steering，跳过 AI 回复）时才渲染刻度线；空会话或消息不足时 `visible=false` 不显示，属设计行为。
 
 ### dsh-plan-switch（Plan 模式一键切换）— 已卸载（2026-08-21）
 
