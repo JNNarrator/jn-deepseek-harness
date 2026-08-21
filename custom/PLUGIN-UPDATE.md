@@ -102,9 +102,10 @@ bash custom/bin/save.sh
 6. **dsh-skill-picker 本地补丁**（node_modules 补丁，`pnpm install` 后需重新打）：
    - **slot 位置**：`lib/client.js` + `src/client.jsx` 中 `conversation.input.right` →
      `conversation.input.left`，order 100 → 60（挪到左侧工具栏，紧跟 refdir 文件夹图标之后）。
+   - **弹框方向**：`popoverStyle` 中 `right: "0"` → `left: "0"`（按钮移到左侧后弹框需向右展开，否则被侧边栏遮挡）。
    - **图标风格**：`custom/vendor/dsh-refdir/client.js` 的 CSS 覆盖（git 跟踪），
      将闪电图标的渐变填充改为 Lucide 线条风格（`fill:none; stroke:currentColor; stroke-width:2`）。
-   - 重装后重新打补丁：`sed -i '' 's/conversation\.input\.right/conversation.input.left/g; s/order: 100/order: 60/g' node_modules/dsh-skill-picker/lib/client.js`
+   - 重装后重新打补丁：`sed -i '' 's/conversation\.input\.right/conversation.input.left/g; s/order: 100/order: 60/g; s/right: "0"/left: "0"/' node_modules/dsh-skill-picker/lib/client.js`
 
 ## 五、历史记录
 
