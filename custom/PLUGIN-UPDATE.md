@@ -111,6 +111,8 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | router-standard | 更新预设 0.2.0 → 0.3.0（首轮路由真实生效、引导改走 agent/pre-step、修复 extractText/bandOf 缺导入等） |
+| 2026-08-21 | @kelearns/dsh-navigation-bar | 新增 0.2.1（npm） |
 | 2026-08-21 | dsh-ui-font | 新增 0.9.2（git 直装）；替代 dsh-font |
 | 2026-08-21 | dsh-font | 卸载（不能调字号，替换为 dsh-ui-font） |
 | 2026-08-21 | dsh-plan-switch | 卸载（有 bug） |
@@ -124,8 +126,8 @@ bash custom/bin/save.sh
 | 2026-08-21 | dsh-smooth-stream | 0.3.3 → 0.3.4（pnpm 自动记入 release-age 豁免） |
 | 2026-08-21 | dsh-super-injector | 卸载（无用）；移除 vendor + bundle + 运行时目录 |
 | 2026-08-21 | @hytime/dsh-thinking-effort | latest 自动升级 0.1.6 → 0.1.7 |
-| 2026-08-19 | dsh-mode-boost | 新增 vendor 0.1.0 + 注册到 profile |
-| 2026-08-19 | router-standard | 更新预设：0.1.x → 0.2.0（拆分为 router-spec + router-standard 双预设，新增 bootstrap v5-v8） |
+| 2026-08-21 | dsh-mode-boost | 新增 vendor 0.1.0 + 注册到 profile |
+| 2026-08-21 | router-standard | 更新预设：0.1.x → 0.2.0（拆分为 router-spec + router-standard 双预设，新增 bootstrap v5-v8） |
 | 2026-08-19 | j-space | 更新 skill：v3.6.0 → v3.6.1（SKILL.md 266 行） |
 | 2026-08-20 | dsh-thinking-effort | 卸载 0.5.2（a1141171521），拆分为 @hytime/dsh-thinking-effort 0.1.6 + @dsh-external/dsh-refdir 0.1.0 |
 | 2026-08-18 | 全部 | 上游 harness rc.5 → rc.7；建立本准则文档 |
