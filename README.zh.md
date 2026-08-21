@@ -61,11 +61,11 @@ custom/bin/dsh.sh
 | `@dsh-external/dsh-mode-boost` | link | 任务感知思维模式路由提升 |
 | `@dsh-external/dsh-refdir` | link | 引用目录工具（白名单文件夹，类 Claude Desktop） |
 | `@hytime/dsh-thinking-effort` | 0.1.7 | 第三方模型推理档位 |
-| `@zebbkira/dsh-skills-mcp-manager` | 0.1.3 | Skills ↔ MCP 桥接 |
 | `dsh-better-sidebar` | 0.14.0 | 服务化侧边栏：文件、终端、Git、子代理 |
 | `dsh-font` | 1.1.0 | 界面/代码字体切换（99 + 31 款，中西文搭配） |
 | `dsh-liquid-glass` | 0.1.0 | 液态玻璃半透明主题 |
 | `dsh-playwright-browser` | 0.1.3 | 浏览器自动化 |
+| `dsh-skill-mcp-panel` | 2.0.1 | 技能 & MCP 管理面板（Web 设置页 + `dsh-panel` CLI） |
 | `dsh-smooth-stream` | 0.3.4 | Web UI 丝滑流式渲染 |
 
 **Preset 与 Provider**：默认 agent preset `router-standard`（任务感知思维模式路由）；LLM provider `jiyuan` 与 `one-model`（均 OpenAI 兼容），默认模型 `deepseek-v4-flash-0731`。

@@ -59,11 +59,11 @@ Fill in API keys once (`custom/dsh-home/.env` or Web UI → Settings), then you'
 | `@dsh-external/dsh-mode-boost` | link | Task-aware reasoning-mode routing boost |
 | `@dsh-external/dsh-refdir` | link | Reference-directory tools (whitelisted folders, Claude-Desktop style) |
 | `@hytime/dsh-thinking-effort` | 0.1.7 | Reasoning-effort levels for third-party models |
-| `@zebbkira/dsh-skills-mcp-manager` | 0.1.3 | Skills ↔ MCP bridge |
 | `dsh-better-sidebar` | 0.14.0 | Service-oriented sidebar: files, terminal, Git, sub-agents |
 | `dsh-font` | 1.1.0 | UI/code font switcher (99 UI + 31 code fonts, CN/EN pairing) |
 | `dsh-liquid-glass` | 0.1.0 | Liquid-glass translucency theme |
 | `dsh-playwright-browser` | 0.1.3 | Browser automation |
+| `dsh-skill-mcp-panel` | 2.0.1 | Skills & MCP management panels (Web UI + `dsh-panel` CLI) |
 | `dsh-smooth-stream` | 0.3.4 | Smooth streaming rendering for the Web UI |
 
 **Presets & providers:** default agent preset `router-standard` (task-aware reasoning-mode routing); LLM providers `jiyuan` and `one-model` (both OpenAI-compatible), default model `deepseek-v4-flash-0731`.

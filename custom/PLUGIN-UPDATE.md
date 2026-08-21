@@ -19,8 +19,8 @@
 | 插件 | 依赖声明 | 上游 | 检查方式 |
 |---|---|---|---|
 | `@anionex/dsh-vision-toolkit` | `^0.1.38` | npm | `npm view` |
-| `@zebbkira/dsh-skills-mcp-manager` | `^0.1.3` | npm | `npm view` |
 | `dsh-playwright-browser` | `^0.1.3` | npm | `npm view` |
+| `dsh-skill-mcp-panel` | `https://github.com/Fishquito7/dsh-skill-mcp-panel/releases/...tgz` | GitHub Releases | GitHub Releases API |
 
 ### 3. 预设 + Skill（文件拷贝，不走 npm）
 
@@ -39,10 +39,14 @@ curl -sS "https://api.github.com/repos/<owner>/<repo>/releases/latest" \
   | python3 -c "import sys,json;d=json.load(sys.stdin);print(d.get('tag_name'),d.get('published_at'))"
 
 # npm 插件（本地 vs 最新）
-for pkg in @anionex/dsh-vision-toolkit @zebbkira/dsh-skills-mcp-manager dsh-playwright-browser; do
+for pkg in @anionex/dsh-vision-toolkit dsh-playwright-browser; do
   echo -n "$pkg 本地="; node -e "console.log(require('./custom/dsh-home/profiles/web/node_modules/$pkg/package.json').version)" 2>/dev/null || echo "(未装)"
   echo -n "    最新="; npm view "$pkg" version
 done
+
+# tarball 插件（GitHub Releases）
+curl -sS "https://api.github.com/repos/Fishquito7/dsh-skill-mcp-panel/releases/latest" \
+  | python3 -c "import sys,json;d=json.load(sys.stdin);print('dsh-skill-mcp-panel 最新=', d.get('tag_name'))"
 ```
 
 ## 三、升级 npm 插件（以 vision-toolkit 为例）
@@ -87,6 +91,8 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | dsh-skill-mcp-panel | 新增 2.0.1（GitHub Releases tarball）；替代 @zebbkira/dsh-skills-mcp-manager |
+| 2026-08-21 | @zebbkira/dsh-skills-mcp-manager | 卸载（替换为 dsh-skill-mcp-panel，功能更强） |
 | 2026-08-21 | @anionex/dsh-vision-toolkit | 0.1.35 → 0.1.38（pnpm 自动记入 release-age 豁免） |
 | 2026-08-21 | dsh-smooth-stream | 0.3.3 → 0.3.4（pnpm 自动记入 release-age 豁免） |
 | 2026-08-21 | dsh-super-injector | 卸载（无用）；移除 vendor + bundle + 运行时目录 |
@@ -160,6 +166,23 @@ bash custom/bin/save.sh
 - 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-better-sidebar@latest`，版本 0.14.0（2026-08-20 升级：0.13.1 → 0.14.0，peer deps 全部升至 rc.8，修复 editor chunk 加载失败）。
 - 兼容性：✅ dsh 0.1.0-rc.8 已适配，dump-config 装配通过。
 - 安装坑：`node-pty` 需要批准构建（`pnpm approve-builds node-pty`），否则 pnpm 安全策略拦截导致安装失败。
+
+### dsh-skill-mcp-panel（技能 & MCP 管理面板）— 2026-08-21 安装
+
+- 仓库：https://github.com/Fishquito7/dsh-skill-mcp-panel
+- 说明：在 Web 设置页同时提供「技能」与「MCP」两个管理面板，并随包提供统一终端命令 `dsh-panel`（skill / mcp 子命令族）。skill 卡片列表/启用停用/删除/搜索/拖入安装/工作区分栏/批量迁移/技能分组/作用域化管理；MCP 支持 Stdio 与 HTTP 两种方式，写 profile `cordis.patch.yml` 受管块，DSH HMR 热加载。
+- 安装方式：首选 GitHub Releases tarball（不走 Git，不受 pnpm v11 构建脚本限制）。
+- 已安装到本地 dsh：依赖声明 `https://github.com/Fishquito7/dsh-skill-mcp-panel/releases/download/v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz`，版本 2.0.1（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: skill-mcp-panel）。
+- 使用：设置 → 插件下方「技能」→ 下方「MCP」；或终端 `dsh-panel skill|mcp ...`。
+- 注意：MCP 连接与工具注册仍依赖官方 `@deepseek-ai/dsh-mcp-client`（base 自带）。
+
+### @zebbkira/dsh-skills-mcp-manager（Skills↔MCP 桥接）— 已卸载（2026-08-21）
+
+- 仓库：https://www.npmjs.com/package/@zebbkira/dsh-skills-mcp-manager
+- 版本 0.1.3，npm 依赖，**2026-08-21 卸载**。
+- 卸载原因：替换为 dsh-skill-mcp-panel（功能更强：Web 双面板 + dsh-panel CLI + 分组/迁移/作用域管理）。
+- 卸载内容：`custom/dsh-home/profiles/web/package.json` 的依赖 + bundle 声明（install 时 pnpm 自动清理）。
 
 ### dsh-super-injector（超级模组注入器）— 已卸载（2026-08-21）
 
