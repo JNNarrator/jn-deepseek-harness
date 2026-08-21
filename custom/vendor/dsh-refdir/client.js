@@ -165,6 +165,10 @@ window.__ModuleLoader__.load({
         }
         .refdir-panel-title {
           font-size: 15px; font-weight: 700; letter-spacing: .01em;
+          display: flex; align-items: center; gap: 6px;
+        }
+        .refdir-panel-title-icon {
+          width: 18px; height: 18px; flex: none; opacity: .9;
         }
         .refdir-panel-close {
           width: 26px; height: 26px; border: none; border-radius: 8px;
@@ -196,7 +200,7 @@ window.__ModuleLoader__.load({
           color: var(--dsw-alias-label-tertiary, #888); line-height: 1.7;
           font-size: 13px;
         }
-        .refdir-panel-empty-icon { font-size: 32px; display: block; margin-bottom: 8px; opacity: .6; }
+        .refdir-panel-empty-icon { width: 32px; height: 32px; display: block; margin: 0 auto 8px; opacity: .6; }
 
         /* 目录列表 */
         .refdir-panel-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
@@ -209,7 +213,7 @@ window.__ModuleLoader__.load({
           background: var(--dsw-alias-interactive-bg-hover, rgba(255,255,255,.08));
           border-color: var(--dsw-alias-border-l2, rgba(255,255,255,.1));
         }
-        .refdir-panel-row-icon { font-size: 16px; flex: none; opacity: .8; }
+        .refdir-panel-row-icon { width: 16px; height: 16px; flex: none; opacity: .8; }
         .refdir-panel-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
         .refdir-panel-row-title { font-weight: 600; font-size: 13px; }
         .refdir-panel-row-path {
@@ -258,6 +262,9 @@ window.__ModuleLoader__.load({
           border-color: var(--dsw-alias-border-l2, rgba(255,255,255,.08));
         }
         .refdir-panel-add:active { transform: translateY(0); }
+        .refdir-panel-plus-icon { width: 16px; height: 16px; flex: none; }
+        .refdir-panel-loader-icon { width: 16px; height: 16px; flex: none; }
+        .refdir-panel-alert-icon { width: 14px; height: 14px; flex: none; }
 
         /* 提示文字 */
         .refdir-panel-hint {
