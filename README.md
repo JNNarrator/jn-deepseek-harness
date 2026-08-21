@@ -58,13 +58,16 @@ Fill in API keys once (`custom/dsh-home/.env` or Web UI → Settings), then you'
 | `@anionex/dsh-vision-toolkit` | 0.1.38 | Vision provider integration (`mimo-v2.5`) |
 | `@dsh-external/dsh-mode-boost` | link | Task-aware reasoning-mode routing boost |
 | `@dsh-external/dsh-refdir` | link | Reference-directory tools (whitelisted folders, Claude-Desktop style) |
-| `@hytime/dsh-thinking-effort` | 0.1.7 | Reasoning-effort levels for third-party models |
 | `dsh-better-sidebar` | 0.14.0 | Service-oriented sidebar: files, terminal, Git, sub-agents |
+| `dsh-effort-slider` | 0.2.5 | Claude-Code-style reasoning-level slider (stepless drag + WebGL flame) |
 | `dsh-font` | 1.1.0 | UI/code font switcher (99 UI + 31 code fonts, CN/EN pairing) |
 | `dsh-liquid-glass` | 0.1.0 | Liquid-glass translucency theme |
+| `dsh-plan-switch` | 0.3.0 | One-click Plan-mode toggle button in the composer |
 | `dsh-playwright-browser` | 0.1.3 | Browser automation |
 | `dsh-skill-mcp-panel` | 2.0.1 | Skills & MCP management panels (Web UI + `dsh-panel` CLI) |
+| `dsh-skill-picker` | 0.2.0 | Composer skill picker (search & insert `/skill-name` gesture) |
 | `dsh-smooth-stream` | 0.3.4 | Smooth streaming rendering for the Web UI |
+| `dsh-tick-rail` | 0.1.5 | Tick-rail conversation navigator (peak-falloff, hover preview, click-to-jump) |
 
 **Presets & providers:** default agent preset `router-standard` (task-aware reasoning-mode routing); LLM providers `jiyuan` and `one-model` (both OpenAI-compatible), default model `deepseek-v4-flash-0731`.
 

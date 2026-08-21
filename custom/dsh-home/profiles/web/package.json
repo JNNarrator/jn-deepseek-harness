@@ -5,13 +5,16 @@
     "@anionex/dsh-vision-toolkit": "^0.1.38",
     "@dsh-external/dsh-mode-boost": "link:../../../vendor/dsh-mode-boost",
     "@dsh-external/dsh-refdir": "link:../../../vendor/dsh-refdir",
-    "@hytime/dsh-thinking-effort": "latest",
     "dsh-better-sidebar": "^0.14.0",
+    "dsh-effort-slider": "github:2768651338/dsh-effort-slider",
     "dsh-font": "github:tianyhjg-lab/dsh-font",
     "dsh-liquid-glass": "github:Ultronen/dsh-liquid-glass",
+    "dsh-plan-switch": "github:a903067276-rgb/dsh-plan-switch",
     "dsh-playwright-browser": "^0.1.3",
     "dsh-skill-mcp-panel": "https://github.com/Fishquito7/dsh-skill-mcp-panel/releases/download/v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz",
-    "dsh-smooth-stream": "^0.3.4"
+    "dsh-skill-picker": "github:a735624258/dsh-skill-picker",
+    "dsh-smooth-stream": "^0.3.4",
+    "dsh-tick-rail": "https://github.com/caisiyang123/dsh-tick-rail/releases/download/v0.1.5/dsh-tick-rail-0.1.5.tgz"
   },
   "dsh": {
     "profile": {
@@ -24,9 +27,12 @@
         "@anionex/dsh-vision-toolkit",
         "dsh-smooth-stream",
         "dsh-skill-mcp-panel",
+        "dsh-skill-picker",
+        "dsh-effort-slider",
+        "dsh-plan-switch",
+        "dsh-tick-rail",
         "dsh-font",
         "dsh-liquid-glass",
-        "@hytime/dsh-thinking-effort",
         "@dsh-external/dsh-refdir"
       ]
     }

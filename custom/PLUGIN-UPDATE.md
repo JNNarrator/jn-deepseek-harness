@@ -20,7 +20,11 @@
 |---|---|---|---|
 | `@anionex/dsh-vision-toolkit` | `^0.1.38` | npm | `npm view` |
 | `dsh-playwright-browser` | `^0.1.3` | npm | `npm view` |
-| `dsh-skill-mcp-panel` | `https://github.com/Fishquito7/dsh-skill-mcp-panel/releases/...tgz` | GitHub Releases | GitHub Releases API |
+| `dsh-skill-mcp-panel` | `.../v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz` | GitHub Releases | GitHub Releases API |
+| `dsh-tick-rail` | `.../v0.1.5/dsh-tick-rail-0.1.5.tgz` | GitHub Releases | GitHub Releases API |
+| `dsh-plan-switch` | `github:a903067276-rgb/dsh-plan-switch` | GitHub main | GitHub API（无 release） |
+| `dsh-skill-picker` | `github:a735624258/dsh-skill-picker` | GitHub main | GitHub API（无 release） |
+| `dsh-effort-slider` | `github:2768651338/dsh-effort-slider` | GitHub main | GitHub API（无 release） |
 
 ### 3. 预设 + Skill（文件拷贝，不走 npm）
 
@@ -45,8 +49,16 @@ for pkg in @anionex/dsh-vision-toolkit dsh-playwright-browser; do
 done
 
 # tarball 插件（GitHub Releases）
-curl -sS "https://api.github.com/repos/Fishquito7/dsh-skill-mcp-panel/releases/latest" \
-  | python3 -c "import sys,json;d=json.load(sys.stdin);print('dsh-skill-mcp-panel 最新=', d.get('tag_name'))"
+for repo in Fishquito7/dsh-skill-mcp-panel caisiyang123/dsh-tick-rail; do
+  echo -n "$repo 最新="; curl -sS "https://api.github.com/repos/$repo/releases/latest" \
+    | python3 -c "import sys,json;d=json.load(sys.stdin);print(d.get('tag_name'))"
+done
+
+# git 直装插件（无 release，查默认分支最新 commit）
+for repo in a903067276-rgb/dsh-plan-switch a735624258/dsh-skill-picker 2768651338/dsh-effort-slider; do
+  echo -n "$repo 最新 commit="; curl -sS "https://api.github.com/repos/$repo/commits" \
+    | python3 -c "import sys,json;d=json.load(sys.stdin);print(d[0]['sha'][:8], d[0]['commit']['committer']['date'])"
+done
 ```
 
 ## 三、升级 npm 插件（以 vision-toolkit 为例）
@@ -91,6 +103,11 @@ bash custom/bin/save.sh
 
 | 日期 | 插件 | 变更 |
 |---|---|---|
+| 2026-08-21 | dsh-tick-rail | 新增 0.1.5（GitHub Releases tarball） |
+| 2026-08-21 | dsh-plan-switch | 新增 0.3.0（git 直装） |
+| 2026-08-21 | dsh-skill-picker | 新增 0.2.0（git 直装） |
+| 2026-08-21 | dsh-effort-slider | 新增 0.2.5（git 直装）；替代 @hytime/dsh-thinking-effort |
+| 2026-08-21 | @hytime/dsh-thinking-effort | 卸载（替换为 dsh-effort-slider，交互更佳） |
 | 2026-08-21 | dsh-skill-mcp-panel | 新增 2.0.1（GitHub Releases tarball）；替代 @zebbkira/dsh-skills-mcp-manager |
 | 2026-08-21 | @zebbkira/dsh-skills-mcp-manager | 卸载（替换为 dsh-skill-mcp-panel，功能更强） |
 | 2026-08-21 | @anionex/dsh-vision-toolkit | 0.1.35 → 0.1.38（pnpm 自动记入 release-age 豁免） |
@@ -113,13 +130,22 @@ bash custom/bin/save.sh
 - 卸载原因：拆分为 @hytime/dsh-thinking-effort（推理档位更强、免补丁）+ @dsh-external/dsh-refdir（引用目录独立插件）。
 - 本地修复记录：`client.js` 第 109 行 `commands.execute(sessionId, line)` 需补第三个参数 `[]`（rc.8 新增 `images` 参数）。
 
-### @hytime/dsh-thinking-effort（hytime 版推理档位插件）— 2026-08-20 安装
+### @hytime/dsh-thinking-effort（hytime 版推理档位插件）— 已卸载（2026-08-21）
 
 - 仓库：https://github.com/hytime/dsh-thinking-effort
-- 说明：为 DSH 的 pi-ai 第三方模型补充可配置的思考强度档位。每模型可配、DSH 档位→线上值映射（如 high→ultra）、子 agent 默认档位。设置页逐模型勾选档位+自由填写 gateway 值。中英日韩多语言。走标准 slots/settings API，无 commands.execute 兼容问题，**零补丁**。
-- 已安装到本地 dsh：`@hytime/dsh-thinking-effort@latest`，版本 0.1.7（2026-08-21，latest 自动升级自 0.1.6）。
-- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过。
-- 使用：设置 → 思考强度档位。
+- 说明：为 DSH 的 pi-ai 第三方模型补充可配置的思考强度档位。每模型可配、DSH 档位→线上值映射（如 high→ultra）、子 agent 默认档位。设置页逐模型勾选档位+自由填写 gateway 值。中英日韩多语言。走标准 slots/settings API。
+- 安装历史：`@hytime/dsh-thinking-effort@latest`，0.1.6 → 0.1.7（2026-08-21 latest 自动升级）。
+- **2026-08-21 卸载**：替换为 dsh-effort-slider（仿 Claude Code 无极滑块交互，更炫）。两者同类功能（为第三方模型补推理档位），不能共存。
+
+### dsh-effort-slider（仿 Claude Code 推理等级滑块）— 2026-08-21 安装
+
+- 仓库：https://github.com/2768651338/dsh-effort-slider
+- 说明：拦截「推理等级」菜单行 → 弹出自定义无极拖动滑块（松手吸附 + WebGL 火焰跟随），任何第三方模型/提供商的思考强度都真实生效。自动注入通用 5 档 + pi-ai 线级补写（热生效）。
+- 安装方式：`github:2768651338/dsh-effort-slider`（无 release，git 直装；lib/ 已提交无需构建）。
+- 已安装版本：0.2.5（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: ui-effort-slider）。
+- 注意：⚠️ 不能与其他「拦截推理等级菜单行」的插件共存（会双面板）。
+- 使用：Composer 模型菜单 →「推理等级」→ 拖动滑块。
 
 ### @dsh-external/dsh-refdir（引用目录独立插件）— 2026-08-20 创建并安装
 
@@ -166,6 +192,31 @@ bash custom/bin/save.sh
 - 已安装到本地 dsh：`pnpm dsh plugin --profile web add dsh-better-sidebar@latest`，版本 0.14.0（2026-08-20 升级：0.13.1 → 0.14.0，peer deps 全部升至 rc.8，修复 editor chunk 加载失败）。
 - 兼容性：✅ dsh 0.1.0-rc.8 已适配，dump-config 装配通过。
 - 安装坑：`node-pty` 需要批准构建（`pnpm approve-builds node-pty`），否则 pnpm 安全策略拦截导致安装失败。
+
+### dsh-tick-rail（会话刻度线导航条）— 2026-08-21 安装
+
+- 仓库：https://github.com/caisiyang123/dsh-tick-rail
+- 说明：会话旁一列刻度线当提问索引（每发一条消息一个刻度，跳过助手回复）。峰值高亮（最长刻度点亮 + 周围衰减）、悬停预览、点击跳转。纯 Web 客户端插件，挂 `shell.overlay` 插槽，跟随主题 token。
+- 安装方式：GitHub Releases tarball（README 提醒勿用 git 直装，会触发 pnpm allowBuilds 拦截）。
+- 已安装版本：0.1.5（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: dsh-tick-rail）。
+
+### dsh-plan-switch（Plan 模式一键切换）— 2026-08-21 安装
+
+- 仓库：https://github.com/a903067276-rgb/dsh-plan-switch
+- 说明：输入框一键进/出 Plan 模式按钮（挂 `conversation.input.left` 插槽），点击执行官方 `/plan` 命令，全流程走官方命令链。plan 进行中自动隐藏、pending 防反。纯前端，host 空实现，macOS 全功能实测。
+- 安装方式：`github:a903067276-rgb/dsh-plan-switch`（无 release，git 直装；无 install 脚本，不触发 allowBuilds）。
+- 已安装版本：0.3.0（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: plan-switch）。
+
+### dsh-skill-picker（输入框技能选择器）— 2026-08-21 安装
+
+- 仓库：https://github.com/a735624258/dsh-skill-picker
+- 说明：输入框工具行右侧 ⚡ 按钮，点开可搜索/点选已安装技能，选中后把官方 `/技能名` 手势插入发送框，随消息发出由 DSH 原生机制加载。WorkBuddy 式交互。挂 `conversation.input.right` 插槽，走官方 skills API。
+- 安装方式：`github:a735624258/dsh-skill-picker`（无 release，git 直装；lib/ 已提交无需本地构建）。
+- 已安装版本：0.2.0（2026-08-21）。
+- 兼容性：✅ dsh 0.1.0-rc.8 dump-config 装配通过（id: dsh-skill-picker）。
+- 与 dsh-skill-mcp-panel 互补：panel 管技能/MCP 管理，picker 管输入时快速选技能。
 
 ### dsh-skill-mcp-panel（技能 & MCP 管理面板）— 2026-08-21 安装
 
