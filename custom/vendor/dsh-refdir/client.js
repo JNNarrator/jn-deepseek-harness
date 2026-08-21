@@ -266,6 +266,19 @@ window.__ModuleLoader__.load({
         .refdir-panel-loader-icon { width: 16px; height: 16px; flex: none; }
         .refdir-panel-alert-icon { width: 14px; height: 14px; flex: none; }
 
+        /* skill-picker 闪电图标：渐变填充 → Lucide 线条风格 */
+        [aria-label="选择技能"] svg {
+          width: 16px !important; height: 16px !important;
+        }
+        [aria-label="选择技能"] svg defs { display: none; }
+        [aria-label="选择技能"] svg path {
+          fill: none !important;
+          stroke: currentColor !important;
+          stroke-width: 2 !important;
+          stroke-linecap: round !important;
+          stroke-linejoin: round !important;
+        }
+
         /* 提示文字 */
         .refdir-panel-hint {
           margin-top: 10px; font-size: 11px; color: var(--dsw-alias-label-tertiary, #888);
