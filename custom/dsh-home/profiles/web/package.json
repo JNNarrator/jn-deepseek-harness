@@ -13,7 +13,7 @@
     "dsh-skill-mcp-panel": "https://github.com/Fishquito7/dsh-skill-mcp-panel/releases/download/v2.0.1/dsh-skill-mcp-panel-2.0.1.tgz",
     "dsh-skill-picker": "github:a735624258/dsh-skill-picker",
     "dsh-smooth-stream": "^0.3.4",
-    "dsh-super-injector": "https://github.com/yjh051108/dsh-super-injector/releases/download/v0.3.3/dsh-external-dsh-super-injector-0.3.3.tgz",
+    "@dsh-external/dsh-super-injector": "https://github.com/yjh051108/dsh-super-injector/releases/download/v0.3.3/dsh-external-dsh-super-injector-0.3.3.tgz",
     "dsh-tick-rail": "https://github.com/caisiyang123/dsh-tick-rail/releases/download/v0.1.5/dsh-tick-rail-0.1.5.tgz",
     "dsh-ui-font": "github:warmwine/dsh-ui-font"
   },
@@ -28,7 +28,7 @@
         "dsh-playwright-browser",
         "@anionex/dsh-vision-toolkit",
         "dsh-smooth-stream",
-        "dsh-super-injector",
+        "@dsh-external/dsh-super-injector",
         "dsh-skill-mcp-panel",
         "dsh-skill-picker",
         "dsh-effort-slider",
