@@ -10,5 +10,5 @@ minimumReleaseAgeExclude:
   - dsh-better-sidebar@0.14.0
   - '@anionex/dsh-vision-toolkit@0.1.38'
   - dsh-smooth-stream@0.3.4
-allowBuilds:
-  node-pty: true
+onlyBuiltDependencies:
+  - node-pty
