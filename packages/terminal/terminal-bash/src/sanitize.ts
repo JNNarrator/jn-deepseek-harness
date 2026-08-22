@@ -5,12 +5,8 @@ import { Buffer } from 'node:buffer'
 /** OSC marker emitted by the controlled bash before each prompt. */
 export const PROMPT_MARKER_PREFIX = '133;D;'
 
-/**
- * Exact printable prompt emitted after the private marker.
- * Keep in sync with `SHELL_PROMPT` in `@deepseek-ai/dsh-tool-bash-persistent`;
- * the persistent bash tool overrides PS1 to this value after spawn.
- */
-export const CONTROLLED_PROMPT = '__DSH_PERSISTENT_BASH_PROMPT__ '
+/** Exact printable prompt emitted after the private marker. */
+export const CONTROLLED_PROMPT = 'dsh> '
 
 /** One sanitized chunk plus whether it contained the owned prompt marker. */
 export interface SanitizedChunk {
