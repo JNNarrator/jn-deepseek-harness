@@ -12,3 +12,5 @@ minimumReleaseAgeExclude:
   - dsh-smooth-stream@0.3.4
 onlyBuiltDependencies:
   - node-pty
+allowBuilds:
+  node-pty: true
