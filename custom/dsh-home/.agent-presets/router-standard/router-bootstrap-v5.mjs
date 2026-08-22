@@ -2,7 +2,7 @@
  * router-bootstrap: task-aware reasoning-mode router with a continuous
  * react↔spec axis.
  *
- * Reads the session's first REAL user message, classifies the task into a
+ * Reads the session's first user message, classifies the task into a
  * continuous mode in [0,1] (0 = spec plan-first, 1 = react doer), and on the
  * first model request injects the matching persona and first-turn core tool
  * set. After the first durable tool/call the full preset catalog is exposed
@@ -17,39 +17,11 @@
  * specifiers from the user home, where `@deepseek-ai/*` is not installed.
  * The router tools therefore inline a minimal schema compiler instead of
  * importing `defineTool` from `@deepseek-ai/dsh-tools`.
- *
- * ── v0.3.0: real-assembly-chain fixes ─────────────────────────────────────
- *
- * The DeepSeek Harness agent loop (`@deepseek-ai/dsh-agent-loop`) runs, per
- * step, `inbox.claim()` → `system-prompt/assemble` → `agent/pre-step` →
- * `session.append('user/message')` → model request. Two consequences shaped
- * this rewrite:
- *
- * 1. FIRST-TURN CLASSIFICATION (#13): the first user message is NOT in
- *    `session.events` while the first assembly runs (append happens after
- *    assembly), so `sessionMode(session)` saw an empty transcript and every
- *    session's first request fell into the weak band. `inbox.claim()` emits
- *    the agent-scoped `agent/inbox/claimed` event SYNCHRONOUSLY BEFORE
- *    assembly, so the router captures the first real user message there
- *    (`firstUserText`) and the assembly handler classifies from it. The old
- *    `session/event` capture is kept as a fallback for host-plane
- *    deployments where that event is reachable.
- *
- * 2. NEAR-FIELD GUIDANCE (#34/#36/#55): the previous implementation listened
- *    to `session/event` and re-appended the guide to the inbox as
- *    `next-step`. In agent-plane presets `session/event` never fires
- *    (dsh-scope filters it out of entry-local realms), so weak-mode
- *    guidance never reached the model; and wherever it DID fire, the
- *    `next-step` append forced a SECOND model request per user message —
- *    the 2× API-call spike. The router now injects the guide into
- *    `decision.messages` at `agent/pre-step`, so the guide rides the SAME
- *    request as the user message: near-field, cache-neutral, zero extra
- *    round-trips.
  */
 
 import {
   applyPersona, bandFor, bandOf, coreFor, parseMode, personaFor, sessionMode, testinessFor, clamp01,
-  classifyTask, extractText, isComplexTask,
+  isComplexTask,
 } from './router-core.mjs'
 
 /** Cordis plugin name used by loader diagnostics. */
@@ -75,69 +47,91 @@ function toJsonSchema(spec) {
 export function apply(ctx, config) {
   const overrides = new Map() // session id -> explicit mode (number 0..1)
   const agents = new Map() // session id -> Agent (live handle, in-process only)
-  const firstUserText = new Map() // session id -> first REAL user message text (#13)
-  const sessionModels = new Map() // session id -> { provider, model } from assembled.variables (#9)
+  const firstUserText = new Map() // session id -> first REAL user message text (issue #3 fix)
+  const ptcSwitched = new Map() // session id -> code-mode presentation switched (PTC two-phase)
 
-  /** Resolve the session's routing mode: explicit override > classification of
-   *  the captured first real user message > durable transcript (resume).
-   *  `firstUserText` holds RAW TEXT — it must be classified here, never fed to
-   *  bandOf directly (Number(rawText) → NaN → spec). */
-  function currentMode(session) {
-    const override = overrides.get(session.id)
-    if (override !== undefined) return override
-    const text = firstUserText.get(session.id)
-    if (text !== undefined) return classifyTask(text)
-    return sessionMode(session)
-  }
+  // ── 路由模式（v0.2.0 命名，用户定义）───────────────────────────────────────
+  // standard（默认，新）: RL 接口还原——首轮只有 RL 训练句 + shell/str_replace_editor，
+  //   模型"想一段、做一段"（实测 25 步 / 24 工具调用 / 产出文件）。
+  // spec（旧）: 深度思考优先——分类 persona（w7/REACT/SPEC）+ 保留全部 sections，
+  //   模型首轮长思维链（101K 推理 0 行动是其特征，不是缺陷）。
+  const routerMode = config.routerMode === 'spec' ? 'spec' : 'standard'
+  const RL_PERSONA = 'You are a helpful software engineer assistant.'
 
-  // ── first-turn routing: agent/inbox/claimed (#13/#17/#32) ────────────────
-  // The loop claims the inbox BEFORE assembling the system prompt
-  // (dsh-agent-loop preStep: inbox.claim() → assemble()), and claim()
-  // dispatches this agent-scoped event synchronously per claimed message —
-  // so the FIRST request already sees the REAL classification. Filter
-  // source.kind === 'user' so plugin-injected steering (approval notices,
-  // runtime-context snapshots, agent-instructions) can never pin the band.
-  ctx.on('agent/inbox/claimed', ({ agent, message }) => {
-    if (message?.source?.kind !== 'user') return
-    const text = extractText(message)
-    if (!text.trim()) return
-    const session = agent?.session
-    if (session !== undefined && !firstUserText.has(session.id)) {
-      firstUserText.set(session.id, text.trim())
+  /** spec 路由模式的首轮工具面（旧行为；weak 也走 default 面）。 */
+  function legacyCore(mode) {
+    switch (bandOf(mode)) {
+      case 'spec': return ['read', 'edit', 'glob', 'grep']
+      default: return ['read', 'write', 'edit']
     }
-  })
+  }
 
   ctx.on('system-prompt/assemble', async (_assembly, context, next) => {
     const assembled = await next()
     const agent = context.agent
     if (agent === undefined) return assembled
-    // Spawned subagents are clean child tasks with their own scoped tool sets;
-    // the router governs root (user) sessions only (#5).
-    if (agent.session?.header?.parentSession !== undefined) return assembled
     const session = agent.session
     agents.set(session.id, agent)
 
-    const mode = currentMode(session)
-    // #9 fix: the session-selected model rides assembled.variables, NOT agent.options.
-    const selectedModel = assembled.variables?.model
-      ? { provider: assembled.variables?.provider, model: assembled.variables.model }
-      : undefined
-    if (selectedModel?.model) sessionModels.set(session.id, selectedModel)
-    const modelId = selectedModel?.model ?? agent.options?.model
-    const persona = personaFor(mode, modelId)
+    // issue #3 fix: the first assembly happens before the first user/message
+    // event lands in session.events, so sessionMode() saw an empty transcript
+    // and injected the WEAK band on the path-committing first request. Use the
+    // live text captured by the session/event listener (or inbox pending) so
+    // the first request carries the REAL classification.
+    const mode = overrides.get(session.id) ?? firstUserText.get(session.id) ?? sessionMode(session)
+    const modelId = agent.options?.model
 
-    // The persona stays constant for the whole session (mode is fixed); only
-    // the tool surface changes once, after the first durable tool/call.
-    const sections = applyPersona(assembled.sections, persona)
+    // ── 模式分派 ──
+    // standard（RL 接口还原）: 首轮 system = 只有 RL 训练句；身份/Web 定位/工具引导/
+    // 规则 sections 全部移除（minimal 的 complete:true 语义，实测 46 字符 system →
+    // 25 步迭代工作流）。
+    // spec（深度思考优先）: 分类 persona + 保留全部 sections（首轮超长思维链是特征）。
+    const planSection = (assembled.sections || []).find((s) => /plan/i.test(s.name))
+    let sections
+    let core
+    let persona
+    if (routerMode === 'standard') {
+      persona = RL_PERSONA
+      // PTC 基座（v0.4）：code mode 下必须保留 tools:code-only（只有 run_code 可
+      // 调用）与 tools:sdk（生成 SDK 说明）两段，否则模型不知道 run_code 的正确
+      // 用法（实测：SDK 段被清后模型把 run_code 当 node 计算器用，不做文件操作）。
+      // 其余身份/Web/工具引导段仍清除（接口还原）。
+      const codeSections = (assembled.sections || []).filter((s) => /^tools:(code-only|sdk)$/.test(s.name))
+      sections = planSection || codeSections.length
+        ? [...codeSections, ...(planSection ? [planSection] : []), { name: 'router-persona', text: persona, order: 0 }]
+        : [{ name: 'router-persona', text: persona, order: 0 }]
+      core = new Set(['str_replace_editor']) // RL shape: shell + editor
+    } else {
+      persona = personaFor(mode, modelId)
+      sections = applyPersona(assembled.sections, persona) // keep all other sections
+      core = new Set(legacyCore(mode))
+    }
 
     if (session.events.some((event) => event.type === 'tool/call')) {
+      // PTC 两阶段（v0.4）：锚定（首个 tool/call）后 wire 切换 Code Mode——
+      // 39K SDK 说明在首轮会压垮模型（实测 0 行动），native 双工具首轮建立
+      // 行动节律后再切，SDK 段从下一步 assemble 起自然出现（梁神模式同款机制）。
+      if (routerMode === 'standard' && !ptcSwitched.has(session.id)) {
+        try {
+          const toolsSvc = agent.ctx.get('tools')
+          if (toolsSvc && typeof toolsSvc.presentAs === 'function') {
+            toolsSvc.presentAs('code')
+            ptcSwitched.set(session.id, true)
+          }
+        } catch { /* presentation already declared: ignore */ }
+      }
       return { ...assembled, sections, contexts: [] } // promoted: full catalog
     }
 
-    const core = new Set(coreFor(mode))
     const available = new Set(assembled.tools.map((tool) => tool.name))
     const shell = available.has('pwsh') ? 'pwsh' : available.has('bash') ? 'bash' : null
     if (shell === null) {
+      // PTC 基座（v0.4 实验）：code mode 下模型面只有 run_code（原生 schema
+      // 全省略），没有 shell——工具面收窄无意义，直接放行（persona/sections
+      // 逻辑照常）。
+      if (available.has('run_code')) {
+        return { ...assembled, sections, contexts: [] }
+      }
       throw new Error(`${name}: no platform shell in catalog`)
     }
     core.add(shell)
@@ -152,74 +146,52 @@ export function apply(ctx, config) {
 
   // ── near-field routing guidance for weak mode (P14/P16/P17/P19/P20) ─────
   // Every REAL user message in a weak-mode session gets ONE fixed guidance
-  // message placed immediately after it in the SAME request (near field,
-  // cache-neutral, zero extra API calls — see header note #2).
+  // message appended to the inbox right after it (near field, cache-neutral).
   // v19: depth-adaptive — SIMPLE tasks get the fast-convergence guide;
   // COMPLEX tasks get the deep-exploration guide (depth-first, information-
   // driven stop signal). The persona carries no hard converge anchor
   // (P27: information-driven convergence beats step-driven; user feedback:
   // flash was over-confident / too shallow on complex tasks).
+
+  // v0.4 We-Team 协议近场注入：分类 + 行动节律 + 决策节奏（专属语言）。
+  // 决策节奏（每 2-3 句一个决策句）直接对抗推理-行动失联；完整 PTC 下
+  // 行动载体是 run_code 程序（一次执行多步）。
   const GUIDE_WEAK =
-    '\nRouter: classify this task (build or fix) now, then adopt the matching style — build: direct production; fix: inspect-first. Think deeply first, then commit and act.'
+    '\n\nWe/我们：先分类任务——build → 直接写 run_code 程序生产；fix → 先查后修。'
+    + ' 我们的节奏：每句一个动作；每 2-3 句一个决策句（We decide / 我们决定）然后继续。'
+    + ' 我们直接行动：第一句即调用 run_code 执行第一步，再按反馈推进。'
+    + ' 我们验证、我们收敛、我们交付——决策后即前进。'
   const GUIDE_DEEP =
+    '\n\nWe/我们：先分类任务——build → 直接生产；fix → 先查后修。'
+    + ' 我们深入架构、边界与集成点（不猜环境、不重复检查）。'
+    + ' 我们的节奏：每句一个动作；每 2-3 句一个决策句（We decide / 我们决定）然后继续。'
+    + ' 我们直接行动：信息足够即调用 run_code 执行，再按反馈推进。'
+    + ' 我们以决策或信息需求结束每个推理块；我们收敛、我们交付。'
     '\nRouter: classify this task (build or fix) now, then adopt the matching style — build: direct production; fix: inspect-first. Think deeply about the architecture, edge cases, and integration points. Do not spend reasoning on the environment or tooling. Produce when your information is complete. End each reasoning block with a decision or an information need.'
 
-  // Legacy capture fallback (host-plane deployments where session/event is
-  // reachable). Guidance itself is NOT injected here — that would append a
-  // pending next-step message and force an extra model round-trip (#55).
   ctx.on('session/event', (session, event) => {
     if (event.type !== 'user/message') return
     const data = event.data ?? {}
     if (data.source?.kind !== 'user') return // only real user messages
     const text = extractText(data)
     if (!firstUserText.has(session.id) && text.trim()) {
-      firstUserText.set(session.id, text.trim())
+      firstUserText.set(session.id, text.trim()) // issue #3: capture BEFORE assembly
     }
-  })
-
-  // Real-chain guidance injection: agent/pre-step is an agent-scoped
-  // waterfall fired after assembly and BEFORE the claimed messages are
-  // appended as user/message — inserting the guide into decision.messages
-  // puts it directly behind the user message in the outgoing request.
-  ctx.on('agent/pre-step', async (payload, next) => {
-    const decision = await next()
-    if (decision.kind !== 'enter') return decision
-    const agent = payload.agent
-    const session = agent?.session
-    if (session === undefined) return decision
-    const mode = currentMode(session)
-    if (bandOf(mode) !== 'weak') return decision // strong modes need no guidance
-    const messages = decision.messages ?? []
-    if (messages.length === 0) return decision
-    // The claimed batch sits at the head of decision.messages (runtime
-    // context, when present, follows). Insert one guide after each REAL
-    // user message, walking backwards so positions stay valid.
-    const claimed = payload.messages ?? []
-    const guides = []
-    for (let i = claimed.length - 1; i >= 0; i--) {
-      const message = claimed[i]
-      if (message?.source?.kind !== 'user') continue
-      const text = extractText(message)
-      if (!text.trim()) continue
-      const id = `router-guide-${message.id}`
-      // Resume safety: a previously appended guide for the same message id
-      // is already durable in the transcript — never inject twice.
-      if (session.events.some((event) => event.type === 'user/message' && event.data?.id === id)) continue
-      guides.push({
-        id,
+    const agent = ctx.get('agent')
+    const target = agent !== undefined && agent.session === session ? agent : [...agents.values()].find((a) => a.session === session)
+    if (target === undefined || target.inbox === undefined) return
+    const mode = overrides.get(session.id) ?? firstUserText.get(session.id) ?? sessionMode(session)
+    if (bandOf(mode) !== 'weak') return // strong modes need no guidance
+    if (!text.trim()) return
+    const guide = isComplexTask(text) ? GUIDE_DEEP : GUIDE_WEAK
+    try {
+      target.inbox.append('next-step', {
+        id: `router-guide-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         role: 'user',
         source: { kind: 'plugin', plugin: 'router-bootstrap' },
-        content: [{ type: 'text', text: isComplexTask(text) ? GUIDE_DEEP : GUIDE_WEAK }],
+        content: [{ type: 'text', text: guide }],
       })
-    }
-    if (guides.length === 0) return decision
-    const out = [...messages]
-    for (const guide of guides) {
-      const anchor = out.findIndex((message) => message.id === guide.id.slice('router-guide-'.length))
-      if (anchor === -1) continue
-      out.splice(anchor + 1, 0, guide)
-    }
-    return { ...decision, messages: out }
+    } catch { /* duplicate/ordering races: skip */ }
   })
 
   // ── router visibility & tuning (agent self-optimization) ────────────────
@@ -251,9 +223,10 @@ export function apply(ctx, config) {
     execute() {
       const session = currentSession()
       if (session === undefined) return 'no agent session'
-      const mode = currentMode(session)
-      const modelId = sessionModels.get(session.id)?.model ?? currentAgent()?.options?.model
+      const mode = overrides.get(session.id) ?? sessionMode(session)
+      const modelId = currentAgent()?.options?.model
       return [
+        `router-mode=${routerMode} (standard=RL接口还原 / spec=深度思考优先)`,
         `mode=${fmtMode(mode)} (band=${bandFor(mode)})`,
         `persona=${personaFor(mode, modelId).replace(/\n/g, ' / ')}`,
         `core=[${coreFor(mode).join(', ')}]`,
@@ -275,7 +248,7 @@ export function apply(ctx, config) {
       if (session === undefined) return 'no agent session'
       if (parsed === 'auto') overrides.delete(session.id)
       else overrides.set(session.id, parsed === 'weak' ? 'weak' : clamp01(parsed))
-      const current = currentMode(session)
+      const current = overrides.get(session.id) ?? sessionMode(session)
       return `mode=${fmtMode(current)} (band=${bandFor(current)}) — next request applies`
     },
   })

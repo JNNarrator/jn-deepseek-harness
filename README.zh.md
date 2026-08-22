@@ -1,80 +1,87 @@
-# DeepSeek Harness
+# jn-deepseek-harness
 
 [English](README.md) | 中文
 
-DeepSeek Harness（`dsh`）是由 [DeepSeek AI](https://deepseek.com) 开发的开源 agent harness（智能体框架）。
+> 本仓库是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（[DeepSeek AI](https://deepseek.com) 开发的「一切皆插件」agent harness）的个人 fork，在 [`custom/`](custom/README.md) 下增加了一套自包含的定制层（dsh-kit）。
 
-它采用**一切皆插件**的架构，并由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://github.com/cordiverse/paper)。
+## 关于本 fork
 
-## 开发者预览
+上游 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`dsh`）是 [DeepSeek AI](https://deepseek.com) 开发的开源 agent harness，由 [Cordis](https://github.com/cordiverse/cordis) 驱动。本 fork 保留上游全部代码，并增加定制层：
 
-DeepSeek Harness 目前处于 _开发者预览_ 阶段，正在快速迭代。**未来将出现破坏兼容性的变更。**
+- **自包含 `DSH_HOME`**：`custom/dsh-home/` 就是运行时 `$DSH_HOME`，所有配置改动（插件、skill、agent 预设、设置、MCP）都落在仓库内，换新电脑 clone 即还原。
+- **精选 `web` profile**：手工挑选的插件组合（vendor 源码 + npm 包），见下方[已装插件](#installed-plugins-web-profile)。
+- **辅助脚本**：安装 / 启动 / 更新 / 保存 / 卸载，覆盖 macOS、Linux、Windows（`.sh` / `.ps1` / `.bat`）。
+- **零冲突跟进上游**：定制内容全在 `custom/`，`custom/bin/update.sh` 拉取上游 `master` 合并，通常无冲突。
 
-<a id="run"></a>
+> 注意：上游仍处于开发者预览期（`0.1.0-rc`），可能有破坏性变更；更新后建议重跑 `install.sh` 还原插件。
 
-## 运行
+## 快速开始
 
-### 通过 `npm` 运行
-
-安装 `Node.js`，然后运行：
-
-```sh
-npx @deepseek-ai/dsh web
-```
-
-该命令默认会在 `http://127.0.0.1:3080` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。
-
-<a id="run-from-source"></a>
-
-### 从源码运行
-
-如需从仓库源码运行：
+环境要求：Node.js `^22.19.0 || >=24.0.0`（nvm：`nvm use 24.19.0`），pnpm 由 corepack 提供。
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
-pnpm install
-pnpm run build
-pnpm dsh web
+git clone https://github.com/JNNarrator/jn-deepseek-harness.git
+cd jn-deepseek-harness
+custom/bin/install.sh
+custom/bin/dsh.sh
 ```
 
-`pnpm run build` 会准备仓库产物。`pnpm dsh web` 会直接使用这些已构建产物，不会重新构建。
+`install.sh` 负责依赖检查 → pnpm install → 构建 → 初始化 `DSH_HOME` 骨架 → 还原插件；`dsh.sh` 启动 Web UI，地址 <http://127.0.0.1:3080>。
 
-## 社区与支持
+填一次密钥（`custom/dsh-home/.env` 或 Web UI「设置」页），即可开工。完整指南见 [`custom/README.md`](custom/README.md)。
 
-- 欢迎通过 [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) 提交反馈或 bug 报告。
-- 为你的插件仓库添加 [`dsh-plugin`](https://github.com/topics/dsh-plugin) 话题，便于被发现。
-- 欢迎加入 DeepSeek Harness 企微群：扫码添加企微小助手并填写入群问卷，完成后小助手会邀请你入群。
+### 辅助脚本
 
-<table>
-  <thead>
-    <tr>
-      <th align="center">企微小助手</th>
-      <th align="center">入群问卷</th>
-      <th align="center">微信公众号</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-assistant.png" alt="DeepSeek Harness 企微小助手二维码" width="180" height="180"></td>
-      <td align="center"><a href="https://trtgsjkv6r.feishu.cn/share/base/form/shrcnIt5twSVdLGD52KJBckGCgg"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-survey.png" alt="DeepSeek Harness 入群问卷二维码" width="180" height="180"></a></td>
-      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wechat-official-account.png" alt="DeepSeek Harness 团队微信公众号二维码" width="180" height="180"></td>
-    </tr>
-  </tbody>
-</table>
+| 脚本 | 用途 |
+| --- | --- |
+| `custom/bin/install.sh` | 依赖检查 → pnpm install → 构建 → 初始化 DSH_HOME 骨架 → 还原插件 |
+| `custom/bin/dsh.sh` | 启动 dsh（默认 Web UI，额外参数透传） |
+| `custom/bin/update.sh [--push]` | 拉取上游 `master` 并合并进本 fork（可选推送） |
+| `custom/bin/save.sh [--push]` | 提交本地变更（可选推送） |
+| `custom/bin/uninstall.sh` | 卸载套件并恢复原 `~/.dsh` |
 
-## 参与贡献
+### 目录结构
 
-参见 [CONTRIBUTING.md](CONTRIBUTING.zh.md)。
+| 路径 | 用途 |
+| --- | --- |
+| `custom/bin/` | dsh-kit 脚本（`lib.sh` 公共库；`.sh` / `.ps1` / `.bat` 变体） |
+| `custom/dsh-home/` | `DSH_HOME` —— settings、sessions、storages、skills、profiles |
+| `custom/dsh-home/profiles/web/` | `web` profile（bundle + patch 层） |
+| `custom/dsh-home/.agent-presets/` | Agent 预设（如 `router-standard`） |
+| `custom/dsh-home/skills/` | 本地技能（如 `j-space`） |
+| `custom/vendor/` | 本地 vendor 插件，链接进 profile |
 
-## 开发
+<a id="installed-plugins-web-profile"></a>
 
-请先阅读[开发指南](docs/development.zh.md)与[架构文档](docs/architecture.zh.md)。
+## 已装插件（`web` profile）
 
-面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
+| 插件 | 版本 | 用途 |
+| --- | --- | --- |
+| `@anionex/dsh-vision-toolkit` | 0.1.38 | 视觉模型接入（`mimo-v2.5`） |
+| `@dsh-external/dsh-mode-boost` | link | 任务感知思维模式路由提升 |
+| `@dsh-external/dsh-refdir` | link | 引用目录工具（白名单文件夹，类 Claude Desktop） |
+| `dsh-better-sidebar` | 0.14.0 | 服务化侧边栏：文件、终端、Git、子代理 |
+| `dsh-effort-slider` | 0.2.5 | 仿 Claude Code 推理等级滑块（无极拖动 + WebGL 火焰） |
+| `dsh-liquid-glass` | 0.1.0 | 液态玻璃半透明主题 |
+| `dsh-playwright-browser` | 0.1.3 | 浏览器自动化 |
+| `dsh-skill-mcp-panel` | 2.0.1 | 技能 & MCP 管理面板（Web 设置页 + `dsh-panel` CLI） |
+| `dsh-skill-picker` | 0.2.0 | 输入框技能选择器（搜索+点选插入 `/技能名` 手势） |
+| `dsh-smooth-stream` | 0.3.4 | Web UI 丝滑流式渲染 |
+| `dsh-tick-rail` | 0.1.5 | 会话刻度线导航条（峰值高亮、悬停预览、点击跳转） |
+| `dsh-ui-font` | 0.9.2 | 全局字号缩放（-3~+20px）、字体更换、准星选取逐区微调 |
+
+**Preset 与 Provider**：默认 agent preset `router-standard`（任务感知思维模式路由）；LLM provider `jiyuan` 与 `one-model`（均 OpenAI 兼容），默认模型 `deepseek-v4-flash-0731`。
+
+## 文档
+
+- dsh-kit 完整指南：[`custom/README.md`](custom/README.md)
+- 插件更新准则与历史：[`custom/PLUGIN-UPDATE.md`](custom/PLUGIN-UPDATE.md)
+- 上游文档：[deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) —— [开发指南](docs/development.md) · [架构文档](docs/architecture.md)
+
+## 特别鸣谢
+
+感谢 **DeepSeek AI** 开源了优秀的 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（MIT），也感谢 `web` profile 中所有社区插件作者的辛勤工作。
 
 ## 许可证
 
-[MIT](LICENSE)
-
-第三方依赖及其许可证见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+[MIT](LICENSE) · 第三方依赖见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)

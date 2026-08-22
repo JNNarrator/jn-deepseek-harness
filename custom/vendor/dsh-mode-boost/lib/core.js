@@ -1,27 +1,25 @@
 /**
- * router-core: reasoning-mode routing logic (zero dependencies).
+ * mode-boost core: reasoning-mode routing logic (zero dependencies).
  *
- * BEHAVIORAL REALITY (measured, 21-point × n=2 on v4-pro): model behavior
- * along the react↔spec axis collapses into THREE stable regions, not a
- * continuum — spec [0, 0.15], a transition band [0.2, 0.45] (unstable mix,
- * avoid), and react [0.5, 1.0] (11 mode values behave identically). The
- * numeric interface therefore maps onto three behavior bands; "continuous"
- * tuning is an illusion at the model layer.
+ * Port of dsh-router-standard's router-core with the MEASURED boosts applied
+ * (all numbers from official-API probes, deepseek-v4-flash,
+ * reasoning_effort=max, 2026-08-15; see README for the full table):
  *
- * FOURTH MODE — weak (internal routing): P8/P11 show a weak-persona domain
- * where the model routes itself from the task (discrimination up to +5.0).
- * The optimal weak persona is model-specific (P11, n=3):
- *   - pro:   spec sentence + few-shot routing instruction (w6, +5.00)
- *   - flash: neutral + explicit "classify then act" instruction (w7, +5.67)
- *   - spec-sentence weak personas ANTI-route on flash (planGreen > 0).
+ * 1. deep-persona — weak/Flash persona gains "Think deeply first, then
+ *    produce." (P20 deep-persona @1536: route 94% / converge 100% vs
+ *    shipped deep-guide 100% / 88%; persona-static keeps prefix-cache hits).
+ * 2. boost guidance — rounds 3+ use the "NEW task, classify fresh" text
+ *    (P19 @1024: route 88% vs BASE 69%; P21 related chains @1024: 69% vs
+ *    baseline 56% — today's ordering, opposite of the published P21).
+ * 3. depth-adaptive dispatch — simple tasks get the fast-convergence guide,
+ *    complex tasks the directed deep guide (P30 @1536: complex 7.5 steps +
+ *    deeper chars; simple 1.0 steps, near-zero reasoning waste).
+ *    The decision-closure suffix is applied ONLY for non-Flash models
+ *    (measured neutral on Flash today: c-closed ≈ b-directed).
  *
- *   mode 0    → pure spec  — plan-first, collective, read-first tools
- *   mode 0.3  → mixed      — transition band (trap; only explicit opt-in)
- *   mode 1    → pure react — doer, produce-verify-fix, test-suppressed
- *   mode W    → weak       — internal routing (model decides per task)
- *
- * `mode` is stored as a number in [0, 1] or the string 'weak'; band mapping
- * quantizes to the four modes.
+ * The texts below are the single source of truth: the probe batteries
+ * (probe/run-mode-boost-eval.mjs) import them from here so what is measured
+ * is exactly what the plugin injects.
  */
 
 export const MODE_SPEC = 0
@@ -43,12 +41,11 @@ const REACT_PERSONA =
   + 'harnesses, scaffolding, or ceremony the user did not ask for. '
   + 'Finish with a usable deliverable and a short summary.'
 
-/** Weak (internal-routing) personas — model-specific optimum (P11/P24).
- *  pro:   spec sentence + classify instruction (w6c, +4.67, P24) — the
- *         few-shot variants and the recall/converge anchors HURT Pro
- *         (P24: suite-full 83% < naked 87.5% vs +guide 100%)
- *  flash: neutral + classify + recall/converge/anti-runaway anchors
- *         (w7, +5.67, P11; anchors lift single-task completion to 100%, P23)
+/** Weak (internal-routing) personas — model-specific optimum.
+ *  pro:   spec sentence + classify instruction (w6c; P24)
+ *  flash: neutral + classify + recall/anti-runaway anchors (w7; P11/P23)
+ *         + deep-first sentence (P20 deep-persona: converge 100%) — the
+ *         measured boost over the shipped w7.
  */
 const WEAK_PRO =
   'You are a helpful software engineer assistant.\n'
@@ -59,15 +56,53 @@ const WEAK_FLASH =
   'You are a helpful assistant.\n'
   + 'Before acting, decide the task type (build or fix) and adopt the matching '
   + 'style: build → hands-on production; fix → inspect-and-plan.\n'
-  + 'Before acting, briefly review what you have already done in this session and continue from where you left off; do not repeat completed steps. Do not run environment checks (echo, whoami, uname, node --version, date) or exhaustive grep/glob scans.'
+  + 'Before acting, briefly review what you have already done in this session and continue from where you left off; do not repeat completed steps. Do not run environment checks (echo, whoami, uname, node --version, date) or exhaustive grep/glob scans.\n'
+  + 'Think deeply first, then produce.'
 
-/** Complexity heuristic: long or architecturally-worded tasks are COMPLEX.
- *  Simple tasks get fast-convergence guidance; complex tasks get deep
- *  exploration guidance (depth-adaptive, v19). */
+// ── guidance texts (near-field, appended to real user messages) ────────────
+
+/** Round 1-2 baseline: classify + adopt style. */
+export const GUIDE_BASE =
+  '\n\nRouter: classify this task (build or fix) now, then adopt the matching style — build: direct production; fix: inspect-first.'
+
+/** Rounds 3+: anti-dilution reclassification (P19 boost / P21 b-boost). */
+export const GUIDE_BOOST =
+  '\n\nRouter: this is a NEW task, different from the previous ones. Classify it fresh (build or fix) and adopt the matching style — build: direct production; fix: inspect-first. Do not follow the previous task\'s style.'
+
+/** Fast-convergence tail for simple tasks (P30: 1 step, zero waste). */
+export const GUIDE_COMMIT = ' Think deeply first, then commit and act.'
+
+/** Directed deep tail for complex tasks (P30: depth without rumination). */
+export const GUIDE_DEEP = ' Think deeply about the architecture, edge cases, and integration points. Do not spend reasoning on the environment or tooling. Produce when your information is complete.'
+
+/** Decision-closure tail — non-Flash models only (P30: +12% depth on Pro;
+ *  measured neutral on Flash today: c-closed ≈ b-directed). */
+export const GUIDE_CLOSURE = ' End each reasoning block with a decision or an information need.'
+
+/** Complexity heuristic: long or architecturally-worded tasks are COMPLEX. */
 const COMPLEX_RE = /(重构|架构|全面|详细|设计|系统|优化|分析|survey|overview|architecture|refactor|comprehensive|detailed|design|system|optimize|analyze)/i
 
 export function isComplexTask(text) {
   return typeof text === 'string' && (text.length > 120 || COMPLEX_RE.test(text))
+}
+
+/**
+ * Conversational first-message detection: greetings / bare acknowledgements /
+ * short messages with no task keywords. On such sessions the router stands
+ * down entirely (original preset persona and tool surface untouched, no
+ * guidance) — the deep engineering persona on a chat session produces long
+ * reasoning chains with nothing to route (measured on 创造模式, 2026-08-15:
+ * 338 reasoning chunks on a greeting + analysis question).
+ */
+const CHAT_RE = /^(你好|您好|hello|hi|hey|嗨|哈喽|在吗|谢谢|感谢|thanks|thank you|早上好|下午好|晚上好|嗯|好|ok|okay|yes|no|嗯嗯|好的)[!。.!？?~～]*$/i
+
+export function isChatTask(text) {
+  if (typeof text !== 'string') return true
+  const t = text.trim()
+  if (t.length === 0) return true
+  if (CHAT_RE.test(t)) return true
+  if (t.length > 24) return false
+  return !t.match(REACT_RE) && !t.match(SPEC_RE) // short + no task keywords → chat
 }
 
 /** True when the routed model id is a Flash-family model. */
@@ -94,6 +129,19 @@ export function personaFor(mode, modelId) {
   }
 }
 
+/**
+ * Per-message near-field guidance (the plugin's exact dispatch):
+ *   round 1-2 → GUIDE_BASE; rounds 3+ → GUIDE_BOOST (anti-dilution);
+ *   simple task → +GUIDE_COMMIT (fast convergence);
+ *   complex task → +GUIDE_DEEP (+GUIDE_CLOSURE for non-Flash models).
+ */
+export function guideFor(round, text, modelId) {
+  const base = round >= 3 ? GUIDE_BOOST : GUIDE_BASE
+  if (!isComplexTask(text)) return base + GUIDE_COMMIT
+  const deep = base + GUIDE_DEEP
+  return isFlashModel(modelId) ? deep : deep + GUIDE_CLOSURE
+}
+
 /** First-turn core tools (shell added dynamically by the plugin). */
 export function coreFor(mode) {
   switch (bandOf(mode)) {
@@ -110,7 +158,6 @@ export function bandFor(mode) {
 }
 
 /** Test-suppression strength for a mode (informational). */
-/** Test-suppression strength for a mode (informational). */
 export function testinessFor(mode) {
   switch (bandOf(mode)) {
     case 'react': return 'suppressed'
@@ -119,7 +166,7 @@ export function testinessFor(mode) {
   }
 }
 
-const REACT_RE = /(开发|创建|写一个|生成|从零|做一个|游戏|网页|网站|构建|新项目|搭建|实现|做出|上线|落地|脚本|工具|应用|build|create|develop|generate|implement|make a|new project)/gi
+const REACT_RE = /(开发|创建|写一个|写|生成|从零|做|做一个|做个|游戏|网页|网站|构建|新项目|搭建|实现|做出|上线|落地|脚本|工具|应用|build|create|develop|generate|implement|write a|write an|build a|make a|new project)/gi
 const SPEC_RE = /(修复|修一下|调试|重构|维护|排查|报错|出错|崩溃|优化|审查|review|fix|debug|refactor|maintain|repair|broken|break|为什么|异常|故障|迁移|升级|兼容)/gi
 
 function countHits(regex, text) {
@@ -129,7 +176,7 @@ function countHits(regex, text) {
 /**
  * Classify a task text into a mode. Clear keyword evidence picks a stable
  * band (1 react / 0 spec); AMBIGUOUS or unmatched text returns 'weak' —
- * the internal-routing mode, where the model decides per task (P11 optimum).
+ * the internal-routing mode, where the model decides per task.
  */
 export function classifyTask(text) {
   const react = countHits(REACT_RE, text)
@@ -140,30 +187,14 @@ export function classifyTask(text) {
 }
 
 /** Per-session mode derived from durable events (resume-safe). */
-/**
- * Per-session mode derived from durable events (resume-safe).
- *
- * v0.3.0: only USER-ORIGIN messages may pin the band. Plugin-injected
- * user-role messages (approval notices, runtime-context snapshots,
- * agent-instructions, the router's own guides) carry `source.kind` values
- * other than 'user'; the first message in a session is often one of them,
- * and classifying from it silently routed every session to weak (#13).
- * Messages without a source tag are treated as user-origin (legacy
- * sessions). Falls back to the first user/message of any origin when no
- * user-origin message exists.
- */
 export function sessionMode(session) {
   const events = session.events
-  const userMsg = events.find((e) => e.type === 'user/message' && (e.data?.source?.kind === 'user' || e.data?.source?.kind === undefined))
-    ?? events.find((e) => e.type === 'user/message')
+  const userMsg = events.find((e) => e.type === 'user/message')
   return classifyTask(extractText(userMsg?.data))
 }
 
 export function extractText(data) {
   if (!data) return ''
-  // 防御性解包：插件/工具生成的 user/message 偶有 `data.message` 嵌套形状
-  // （如注入器 startIngest 的 seed），直接读 data.content 会得到空串 →
-  // 构建/修复任务被误判 weak（router-standard issue #1）。
   const payload = data && typeof data.message === 'object' && data.message !== null ? data.message : data
   const content = Array.isArray(payload.content) ? payload.content : []
   return content.map((c) => (typeof c === 'string' ? c : (c.text ?? ''))).join(' ')

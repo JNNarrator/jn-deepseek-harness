@@ -1,59 +1,85 @@
-# DeepSeek Harness
+# jn-deepseek-harness
 
 English | [中文](README.zh.md)
 
-DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
+> A personal fork of [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — the "everything is a plugin" agent harness by [DeepSeek AI](https://deepseek.com) — with a self-contained customization kit (`dsh-kit`) under [`custom/`](custom/README.md).
 
-It uses an architecture where **everything is a plugin**, and is powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://github.com/cordiverse/paper).
+## About this fork
 
-## Developer preview
+Upstream [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com), powered by [Cordis](https://github.com/cordiverse/cordis). This fork keeps the upstream codebase and adds a customization layer:
 
-DeepSeek Harness is currently in _developer preview_ and is iterating rapidly. **THERE WILL BE COMPATIBILITY-BREAKING CHANGES.**
+- **Self-contained `DSH_HOME`** — `custom/dsh-home/` is the runtime `$DSH_HOME`; every config change (plugins, skills, agent presets, settings, MCP) lands inside the repo, so cloning on a new machine restores everything.
+- **Curated `web` profile** — a hand-picked set of plugins (vendored sources + npm packages), see [Installed plugins](#installed-plugins-web-profile).
+- **Helper scripts** — install / start / update / save / uninstall for macOS, Linux and Windows (`.sh` / `.ps1` / `.bat`).
+- **Conflict-free upstream tracking** — all customization stays in `custom/`; `custom/bin/update.sh` fetches upstream `master` and merges (usually zero conflicts).
 
-## Run
+> Note: upstream is still in developer preview (`0.1.0-rc`) with breaking changes possible; after an update, re-run `install.sh` to restore plugins.
 
-### Run from `npm`
+## Quick start
 
-Install `Node.js`, then run:
-
-```sh
-npx @deepseek-ai/dsh web
-```
-
-The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).
-
-### Run from source
-
-To run from a repository checkout:
+Requirements: Node.js `^22.19.0 || >=24.0.0` (nvm: `nvm use 24.19.0`), pnpm via corepack.
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
-pnpm install
-pnpm run build
-pnpm dsh web
+git clone https://github.com/JNNarrator/jn-deepseek-harness.git
+cd jn-deepseek-harness
+custom/bin/install.sh
+custom/bin/dsh.sh
 ```
 
-`pnpm run build` prepares the repository artifacts. `pnpm dsh web` uses those built artifacts without rebuilding.
+`install.sh` checks deps → pnpm install → build → init `DSH_HOME` skeleton → restore plugins; `dsh.sh` starts the Web UI at http://127.0.0.1:3080.
 
-## Community and support
+Fill in API keys once (`custom/dsh-home/.env` or Web UI → Settings), then you're set. The full guide lives in [`custom/README.md`](custom/README.md).
 
-- Feel free to submit feedback or bug reports through [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions).
-- Add the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic to your plugin repository for discoverability.
-- Join <a href="https://discord.gg/Ycq5dCaS4">DeepSeek Harness Discord community</a>.
+### Helper scripts
 
-## Contributing
+| Script | Purpose |
+| --- | --- |
+| `custom/bin/install.sh` | Check deps → pnpm install → build → init `DSH_HOME` skeleton → restore plugins |
+| `custom/bin/dsh.sh` | Start dsh (Web UI by default; extra args are passed through) |
+| `custom/bin/update.sh [--push]` | Fetch upstream `master` and merge into this fork (optionally push) |
+| `custom/bin/save.sh [--push]` | Commit local changes (optionally push) |
+| `custom/bin/uninstall.sh` | Remove the kit and restore the previous `~/.dsh` |
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+### Directory layout
 
-## Development
+| Path | Purpose |
+| --- | --- |
+| `custom/bin/` | dsh-kit scripts (`lib.sh` shared library; `.sh` / `.ps1` / `.bat` variants) |
+| `custom/dsh-home/` | `DSH_HOME` — settings, sessions, storages, skills, profiles |
+| `custom/dsh-home/profiles/web/` | The `web` profile (bundles + patch layers) |
+| `custom/dsh-home/.agent-presets/` | Agent presets (e.g. `router-standard`) |
+| `custom/dsh-home/skills/` | Local skills (e.g. `j-space`) |
+| `custom/vendor/` | Vendored local plugins, linked into the profile |
 
-Start with the [development guide](docs/development.md) and [architecture documentation](docs/architecture.md).
+## Installed plugins (`web` profile)
 
-For agents, follow [AGENTS.md](AGENTS.md).
+| Plugin | Version | Purpose |
+| --- | --- | --- |
+| `@anionex/dsh-vision-toolkit` | 0.1.38 | Vision provider integration (`mimo-v2.5`) |
+| `@dsh-external/dsh-mode-boost` | link | Task-aware reasoning-mode routing boost |
+| `@dsh-external/dsh-refdir` | link | Reference-directory tools (whitelisted folders, Claude-Desktop style) |
+| `dsh-better-sidebar` | 0.14.0 | Service-oriented sidebar: files, terminal, Git, sub-agents |
+| `dsh-effort-slider` | 0.2.5 | Claude-Code-style reasoning-level slider (stepless drag + WebGL flame) |
+| `dsh-liquid-glass` | 0.1.0 | Liquid-glass translucency theme |
+| `dsh-playwright-browser` | 0.1.3 | Browser automation |
+| `dsh-skill-mcp-panel` | 2.0.1 | Skills & MCP management panels (Web UI + `dsh-panel` CLI) |
+| `dsh-skill-picker` | 0.2.0 | Composer skill picker (search & insert `/skill-name` gesture) |
+| `dsh-smooth-stream` | 0.3.4 | Smooth streaming rendering for the Web UI |
+| `dsh-tick-rail` | 0.1.5 | Tick-rail conversation navigator (peak-falloff, hover preview, click-to-jump) |
+| `dsh-ui-font` | 0.9.2 | Global font-size scale (-3~+20px), font picker, crosshair picker for per-area tuning |
+
+**Presets & providers:** default agent preset `router-standard` (task-aware reasoning-mode routing); LLM providers `jiyuan` and `one-model` (both OpenAI-compatible), default model `deepseek-v4-flash-0731`.
+
+## Docs
+
+- Full dsh-kit guide (Chinese): [`custom/README.md`](custom/README.md)
+- Plugin update policy & history: [`custom/PLUGIN-UPDATE.md`](custom/PLUGIN-UPDATE.md)
+- Upstream docs: [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) — [development](docs/development.md) · [architecture](docs/architecture.md)
+
+## Acknowledgements
+
+Special thanks to **DeepSeek AI** for creating and open-sourcing [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (MIT), and to all the community plugin authors whose work makes the `web` profile possible.
 
 ## License
 
-[MIT](LICENSE)
-
-Third-party dependencies and their licenses are disclosed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+[MIT](LICENSE) · Third-party dependencies: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)

@@ -1,5 +1,2 @@
 # 本机安装状态（安装/卸载的依据），不入库
 .kit-state.json
-
-# 上游根 .gitignore 的 lib/ 规则会误伤内置插件的构建产物，显式豁免
-!vendor/dsh-super-injector/lib/

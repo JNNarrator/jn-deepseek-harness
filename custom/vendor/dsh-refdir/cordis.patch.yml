@@ -1,0 +1,4 @@
+# dsh-refdir: 引用目录（独立插件，从 dsh-thinking-effort 拆分）
+- insert:
+    - id: refdir
+      name: '@dsh-external/dsh-refdir'

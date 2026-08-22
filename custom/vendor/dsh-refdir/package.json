@@ -1,0 +1,40 @@
+{
+  "name": "@dsh-external/dsh-refdir",
+  "version": "0.1.0",
+  "description": "DSH 引用目录插件：为会话添加可读写的白名单文件夹，注册 refdir_list/read/write/edit/grep 工具。从 a1141171521/dsh-thinking-effort 拆分，适配 dsh 0.1.0-rc.8。",
+  "type": "module",
+  "main": "index.js",
+  "files": ["index.js", "client.js", "cordis.patch.yml", "modules/"],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-commands": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-client-ui-commands": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-session": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-fs": "^0.1.0-rc.8",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.8"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-slots",
+        "@deepseek-ai/dsh-client-ui-commands"
+      ],
+      "platform": "web"
+    }
+  },
+  "license": "MIT"
+}
